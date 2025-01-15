@@ -1,0 +1,123 @@
+@startuml
+skinparam class {
+    BackgroundColor white
+    ArrowColor #2C3E50
+    BorderColor #2C3E50
+}
+
+skinparam package {
+    BackgroundColor #EEEEEE
+    BorderColor #2C3E50
+}
+
+skinparam note {
+    BackgroundColor #FFF9C4
+    BorderColor #FBC02D
+}
+
+package "User Management" {
+    class User {
+        +_id: ObjectId
+        +userName: String
+        +hashPass: String
+        +role: String
+        +avatar: String
+        +email: String
+    }
+    note right of User::role
+        enum: ['admin', 'customer']
+        default: 'customer'
+    end note
+
+    class Team {
+        +_id: ObjectId
+        +idHost: ObjectId
+        +name: String
+        +image: String
+        +maxParticipant: Number
+        +members: Array
+        +quizs: ObjectId[]
+    }
+    note right of Team::members
+        Array of:
+        - member: ObjectId
+        - role: ['manager', 'participant']
+    end note
+
+    class RequestJoin {
+        +_id: ObjectId
+        +idTeam: ObjectId
+        +idUser: ObjectId
+        +status: String
+    }
+    note right of RequestJoin::status
+        enum: ['pending', 'rejected', 'accepted']
+    end note
+}
+
+package "Quiz Management" {
+    class Quiz {
+        +_id: ObjectId
+        +name: String
+        +description: String
+        +topicId: ObjectId
+        +image: String
+        +idCreator: ObjectId
+        +status: String
+        +time: Number
+    }
+
+    class Question {
+        +_id: ObjectId
+        +content: String
+        +type: String
+        +topicId: ObjectId
+        +idCreator: ObjectId
+    }
+    note right of Question::type
+        enum: ['selected-one', 'selected-many', 'constructed']
+    end note
+
+    class Answer {
+        +_id: ObjectId
+        +content: String
+        +quizId: ObjectId
+        +isCorrect: Boolean
+    }
+
+    class Topic {
+        +_id: ObjectId
+        +name: String
+    }
+}
+
+package "Result Management" {
+    class Result {
+        +_id: ObjectId
+        +idParticipant: ObjectId
+        +answers: ObjectId[]
+        +score: Number
+        +completeTime: Date
+    }
+}
+
+' Relationships
+Team "1" *-- "*" User : members
+Team "1" *-- "*" Quiz : quizs
+
+Quiz "*" -- "1" Topic : belongs to
+Quiz "*" -- "1" User : created by
+
+Question "*" -- "1" Topic : belongs to
+Question "*" -- "1" User : created by
+
+Answer "*" -- "1" Quiz : belongs to
+
+Result "*" -- "1" User : taken by
+Result "1" *-- "*" Answer : contains
+
+RequestJoin "*" -- "1" Team : requests to
+RequestJoin "*" -- "1" User : requested by
+
+Team "*" -- "1" User : hosted by
+@enduml

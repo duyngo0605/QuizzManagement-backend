@@ -1,0 +1,14 @@
+
+const mongoose = require('mongoose');
+
+const QuestionSchema = new mongoose.Schema({
+    id: { type: String, required: true, unique: true },
+    content: { type: String, required: true },
+    type: { type: String, 
+        enum: ['selected-one', 'selected-many', 'constructed'],
+        required: true },
+    topicId: { type: mongoose.Schema.Types.ObjectId, ref: 'Topic' },
+    idCreator: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+}, { timestamps: true });
+
+module.exports = mongoose.model('Question', QuestionSchema);
