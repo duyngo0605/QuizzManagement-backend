@@ -71,10 +71,11 @@ package "Quiz Management" {
         +_id: ObjectId
         +content: String
         +type: String
+        +score: Number
         +topicId: ObjectId
         +idCreator: ObjectId
     }
-    note right of Question::type
+    note left of Question::type
         enum: ['selected-one', 'selected-many', 'constructed']
     end note
 
@@ -111,7 +112,7 @@ Quiz "*" -- "1" User : created by
 Question "*" -- "1" Topic : belongs to
 Question "*" -- "1" User : created by
 
-Answer "*" -- "1" Quiz : belongs to
+Answer "*" -- "1" Question : belongs to
 
 Result "*" -- "1" User : taken by
 Result "1" *-- "*" Answer : contains

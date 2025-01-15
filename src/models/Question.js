@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const QuestionSchema = new mongoose.Schema({
     id: { type: String, required: true, unique: true },
     content: { type: String, required: true },
+    score: { type: Number, required: true},
     type: { type: String, 
         enum: ['selected-one', 'selected-many', 'constructed'],
         required: true },
