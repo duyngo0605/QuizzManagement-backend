@@ -1,0 +1,11 @@
+const express = require("express")
+const router = express.Router()
+const QuestionController = require('../controllers/QuestionController')
+const { authMiddleWare, authUserMiddleWare } = require("../middleware/authMiddleware");
+
+router.post('', QuestionController.createQuestion)
+router.put('/:id', QuestionController.updateQuestion)
+router.delete('/:id', QuestionController.deleteQuestion)
+router.get('/:id?', QuestionController.getQuestion)
+
+module.exports = router

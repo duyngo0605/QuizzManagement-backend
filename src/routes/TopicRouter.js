@@ -6,6 +6,6 @@ const { authMiddleWare, authUserMiddleWare } = require("../middleware/authMiddle
 router.post('', authMiddleWare, TopicController.createTopic)
 router.put('/:id', authMiddleWare, TopicController.updateTopic)
 router.delete('/:id', authMiddleWare, TopicController.deleteTopic)
-router.get('/:id?', authUserMiddleWare, TopicController.getTopic)
+router.get('/:id?', TopicController.getTopic)
 
 module.exports = router
