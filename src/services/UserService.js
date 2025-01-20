@@ -4,7 +4,7 @@ const { generalAccessToken, generalRefreshToken, decodeAccessToken } = require('
 
 const createUser = async (newUser) => {
     return new Promise(async (resolve, reject) => {
-        const { userName, hassPass, role, avatar, email } = newUser
+        const { userName, hashPass, role, avatar, email } = newUser
 
         try {
             const checkUser = await User.findOne({
@@ -17,11 +17,11 @@ const createUser = async (newUser) => {
                     message: 'The user was existed.'
                 })
             }
-            const hash = bcrypt.hashSync(hassPass, 10);
+            const hash = bcrypt.hashSync(hashPass, 10);
 
             const createdUser = await User.create({
                 userName,
-                hassPass: hash,
+                hashPass: hash,
                 role,
                 avatar,
                 email
@@ -46,8 +46,8 @@ const loginUser = async (loginModel) => {
     return new Promise(async (resolve, reject) => {
 
 
-        const { userName, hassPass} = loginModel
-        console.log(userName, hassPass)
+        const { userName, hashPass} = loginModel
+        console.log(userName, hashPass)
         try {
             const checkUser = await User.findOne({
                 userName: userName
@@ -59,9 +59,9 @@ const loginUser = async (loginModel) => {
                     message: 'The user is not defined.'
                 })
             }
-            const comparehassPass = bcrypt.compareSync(hassPass, checkUser.hassPass);
+            const comparehashPass = bcrypt.compareSync(hashPass, checkUser.hashPass);
 
-            if (comparehassPass)
+            if (comparehashPass)
             { 
                 const access_token = await generalAccessToken({
                     id: checkUser.id,
@@ -85,7 +85,7 @@ const loginUser = async (loginModel) => {
             {
                 reject({
                     status: 'ERR',
-                    message: 'The hassPass is not correct.'
+                    message: 'The hashPass is not correct.'
                 })
             }
             
@@ -143,10 +143,10 @@ const updateUser = async (userId, data) => {
                     message: 'The user is not defined.'
                 })
             }
-            if (data.hassPass)
+            if (data.hashPass)
             {
-                const hash = bcrypt.hashSync(data.hassPass, 10);
-                data.hassPass = hash;
+                const hash = bcrypt.hashSync(data.hashPass, 10);
+                data.hashPass = hash;
             }
 
             const updatedUser = await User.findByIdAndUpdate(userId, data, {new: true})
