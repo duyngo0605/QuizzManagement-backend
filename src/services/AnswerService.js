@@ -1,15 +1,15 @@
-const Topic = require('../models/Topic')
+const Answer = require('../models/Answer')
 
-const createTopic = async (newTopic) => {
+const createAnswer = async (newAnswer) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const createdTopic = await Topic.create(newTopic)
-            if (createdTopic)
+            const createdAnswer = await Answer.create(newAnswer)
+            if (createdAnswer)
             { 
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
-                data: createdTopic
+                data: createdAnswer
             })
             }
         }
@@ -21,31 +21,31 @@ const createTopic = async (newTopic) => {
 }
 
 
-const getTopic = (id) => {
+const getAnswer = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             if (!id) {
-                const allTopic = await Topic.find()
+                const allAnswer = await Answer.find()
                 resolve({
                     status: 'OK',
                     message: 'Success',
-                    data: allTopic
+                    data: allAnswer
                 })
             }
             else {
-                const Topic = await Topic.findOne({
+                const Answer = await Answer.findOne({
                     _id: id
                 })
-                if (Topic === null) {
+                if (Answer === null) {
                     resolve({
                         status: 'ERR',
-                        message: 'The Topic is not defined'
+                        message: 'The Answer is not defined'
                     })
                 }
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
-                    data: Topic
+                    data: Answer
                 })
             }
         } catch (e) {
@@ -54,25 +54,25 @@ const getTopic = (id) => {
     })
 }
 
-const updateTopic = async (TopicId, data) => {
+const updateAnswer = async (AnswerId, data) => {
     return new Promise(async (resolve, reject) => {
 
         try {
-            const checkTopic = await Topic.findOne({
-                _id: TopicId
+            const checkAnswer = await Answer.findOne({
+                _id: AnswerId
             })
-            if (!checkTopic){
+            if (!checkAnswer){
                 resolve({
                     status: 'ERR',
-                    message: 'The Topic is not defined.'
+                    message: 'The Answer is not defined.'
                 })
             }
 
-            const updatedTopic = await Topic.findByIdAndUpdate(TopicId, data, {new: true})
+            const updatedAnswer = await Answer.findByIdAndUpdate(AnswerId, data, {new: true})
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
-                data: updatedTopic
+                data: updatedAnswer
             })
         }
 
@@ -82,22 +82,22 @@ const updateTopic = async (TopicId, data) => {
     })
 }
 
-const deleteTopic = (id) => {
+const deleteAnswer = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const checkTopic = await Topic.findOne({
+            const checkAnswer = await Answer.findOne({
                 _id: id
             })
-            if (checkTopic === null) {
+            if (checkAnswer === null) {
                 resolve({
                     status: 'ERR',
-                    message: 'The Topic is not defined'
+                    message: 'The Answer is not defined'
                 })
             }
-            await Topic.findByIdAndDelete(id)
+            await Answer.findByIdAndDelete(id)
             resolve({
                 status: 'OK',
-                message: 'Delete Topic success',
+                message: 'Delete Answer success',
             })
         } catch (e) {
             reject(e)
@@ -106,8 +106,8 @@ const deleteTopic = (id) => {
 }
 
 module.exports = {
-    createTopic,
-    getTopic,
-    updateTopic,
-    deleteTopic,
+    createAnswer,
+    getAnswer,
+    updateAnswer,
+    deleteAnswer,
 }
