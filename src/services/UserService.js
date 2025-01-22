@@ -1,6 +1,6 @@
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
-const { generalAccessToken, generalRefreshToken, decodeAccessToken } = require('./JwtService')
+const { generateAccessToken, generateRefreshToken, decodeAccessToken } = require('./JwtService')
 
 const createUser = async (newUser) => {
     return new Promise(async (resolve, reject) => {
@@ -61,13 +61,13 @@ const loginUser = async (loginModel) => {
 
             if (comparepassword)
             { 
-                const access_token = await generalAccessToken({
+                const access_token = await generateAccessToken({
                     id: checkUser.id,
-                    Team: checkUser.username,
+                    username: checkUser.username,
                     role: checkUser.role
                 })
     
-                const refresh_token = await generalRefreshToken({
+                const refresh_token = await generateRefreshToken({
                     id: checkUser.id,
                     username: checkUser.username,
                     role: checkUser.role
