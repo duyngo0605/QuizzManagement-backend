@@ -94,7 +94,6 @@ const deleteQuestion = (id) => {
                     message: 'The Question is not defined'
                 })
             }
-            await Shift.deleteMany({Question: id})
             await Question.findByIdAndDelete(id)
             resolve({
                 status: 'OK',
