@@ -5,6 +5,7 @@ const QuestionRouter = require("./QuestionRouter")
 const QuizRouter = require("./QuizRouter")
 const TeamRouter = require("./TeamRouter")
 const RequestJoinRouter = require("./RequestJoinRouter")
+const ResultRouter = require("./ResultRouter")
 
 const routes = (app) => {
     app.use("/api/user", UserRouter);
@@ -14,6 +15,7 @@ const routes = (app) => {
     app.use("api/quiz", QuizRouter);
     app.use("api/team", TeamRouter);
     app.use("api/requestjoin", RequestJoinRouter);
+    app.use("api/result", ResultRouter);
   };
   
   module.exports = routes;
