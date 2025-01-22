@@ -44,13 +44,11 @@ const createUser = async (newUser) => {
 
 const loginUser = async (loginModel) => {
     return new Promise(async (resolve, reject) => {
-
-
-        const { userName, hashPass} = loginModel
-        console.log(userName, hashPass)
+        const { username, password} = loginModel
+        console.log(username, password)
         try {
             const checkUser = await User.findOne({
-                userName: userName
+                userName: username
             })
 
             if (!checkUser){
@@ -59,7 +57,7 @@ const loginUser = async (loginModel) => {
                     message: 'The user is not defined.'
                 })
             }
-            const comparehashPass = bcrypt.compareSync(hashPass, checkUser.hashPass);
+            const comparehashPass = bcrypt.compareSync(password, checkUser.hashPass);
 
             if (comparehashPass)
             { 
