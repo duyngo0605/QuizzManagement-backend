@@ -50,8 +50,41 @@ package "User Management" {
         +idUser: ObjectId
         +status: String
     }
+
+    
+    class Post {
+        +_id: ObjectId
+        +content: String
+        +image: String
+        +team: ObjectId
+        +quiz: ObjectId
+        +creator: ObjectId
+        +likes: Array
+        +comments: ObjectId[]
+    }
+    note right of Post::likes
+        Array of likes:
+        - user: ObjectId
+        - date: Date
+    end note
+
+    class Comment {
+        +_id: ObjectId
+        +user: ObjectId
+        +content: String
+        +date: Date
+        +likes: Array
+    }
+    note right of Comment::likes
+        Array of likes:
+        - user: ObjectId
+        - date: Date
+    end note
+    
     note right of RequestJoin::status
-        enum: ['pending', 'rejected', 'accepted']
+        enum: ['pending', 
+        - 'rejected',
+        - 'accepted']
     end note
 }
 
@@ -76,13 +109,17 @@ package "Quiz Management" {
         +idCreator: ObjectId
     }
     note left of Question::type
-        enum: ['selected-one', 'selected-many', 'constructed']
+        enum: ['selected-one',
+        - 'selected-many',
+        - 'constructed',
+        - 'fill-in-the-blank',
+        - 'drag-and-drop']
     end note
 
     class Answer {
         +_id: ObjectId
         +content: String
-        +quizId: ObjectId
+        +questionId: ObjectId
         +isCorrect: Boolean
     }
 
@@ -90,6 +127,7 @@ package "Quiz Management" {
         +_id: ObjectId
         +name: String
     }
+
 }
 
 package "Result Management" {
@@ -121,4 +159,11 @@ RequestJoin "*" -- "1" Team : requests to
 RequestJoin "*" -- "1" User : requested by
 
 Team "*" -- "1" User : hosted by
+
+Post "*" -- "1" User: created by
+Post "*" -- "1" Team: belongs to
+Post "*" -- "1" Quiz: related to
+Post "1" *-- "*" Comment: contains
+
+Comment "*" -- "1" User: created by
 @enduml
