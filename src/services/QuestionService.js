@@ -1,4 +1,5 @@
 const Question = require('../models/Question')
+const Quiz = require('../models/Quiz')
 
 const createQuestion = async (newQuestion) => {
     return new Promise(async (resolve, reject) => {
@@ -11,6 +12,13 @@ const createQuestion = async (newQuestion) => {
                 message: 'SUCCESS',
                 data: createdQuestion
             })
+            }
+            if(newQuestion.idQuiz){
+                const quiz = await Quiz.findOne({
+                    _id: newQuestion.idQuiz
+                })
+                quiz.questions.push(createdQuestion._id)
+                await quiz.save()
             }
         }
 
