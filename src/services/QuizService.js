@@ -105,7 +105,7 @@ const deleteQuiz = (id) => {
     })
 }
 
-const addQuestions = async (id, questions) => {
+const addQuestions = async (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
             const quiz = await Quiz.findOne({
@@ -117,7 +117,10 @@ const addQuestions = async (id, questions) => {
                     message: 'The Quiz is not defined.'
                 })
             }
-            quiz.questions.push(questions)
+            const questions = data.questions
+            questions.forEach(question => {
+                 quiz.questions.push(question)
+            })
             await quiz.save()
             resolve({
                 status: 'OK',
@@ -130,7 +133,7 @@ const addQuestions = async (id, questions) => {
     })
 }
 
-const removeQuestions = async (id, questions) => {
+const removeQuestions = async (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
             const quiz = await Quiz.findOne({
@@ -142,7 +145,11 @@ const removeQuestions = async (id, questions) => {
                     message: 'The Quiz is not defined.'
                 })
             }
-            quiz.questions.pull(questions)
+            const questions = data.questions
+            questions.forEach(question => {
+                if (quiz.questions.includes(question))
+                    quiz.questions.pull(question)
+            })
             await quiz.save()
             resolve({
                 status: 'OK',
@@ -160,4 +167,6 @@ module.exports = {
     getQuiz,
     updateQuiz,
     deleteQuiz,
+    addQuestions,
+    removeQuestions
 }

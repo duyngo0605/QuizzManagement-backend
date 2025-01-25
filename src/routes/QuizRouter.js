@@ -7,5 +7,7 @@ router.post('', QuizController.createQuiz)
 router.put('/:id', QuizController.updateQuiz)
 router.delete('/:id', QuizController.deleteQuiz)
 router.get('/:id?', QuizController.getQuiz)
+router.post('/:id/questions', QuizController.addQuestions)
+router.delete('/:id/questions', QuizController.removeQuestions)
 
 module.exports = router

@@ -71,9 +71,37 @@ const deleteQuiz = async (req,res) => {
     }
 }
 
+const addQuestions = async (req, res) => {
+    try {
+        const QuizId = req.params.id
+        const data = req.body
+        const response = await QuizService.addQuestions(QuizId, data)
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
+const removeQuestions = async (req, res) => {
+    try {
+        const QuizId = req.params.id
+        const data = req.body
+        const response = await QuizService.removeQuestions(QuizId, data)
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 module.exports = {
     createQuiz,
     updateQuiz,
     deleteQuiz,
     getQuiz,
+    addQuestions,
+    removeQuestions
 }
