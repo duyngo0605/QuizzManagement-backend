@@ -1,0 +1,72 @@
+[
+    {
+        "username": "customer1",
+        "password": "customer1",
+        "role": "customer",
+        "avatar": "https://example.com/avatars/customer1.jpg",
+        "email": "customer1@example.com"
+      },
+      {
+        "username": "customer2",
+        "password": "customer2",
+        "role": "customer",
+        "avatar": "https://example.com/avatars/customer2.jpg",
+        "email": "customer2@example.com"
+      },
+      {
+        "username": "customer3",
+        "password": "customer3",
+        "role": "customer",
+        "avatar": "https://example.com/avatars/customer3.jpg",
+        "email": "customer3@example.com"
+      },
+      {
+        "username": "customer4",
+        "password": "customer4",
+        "role": "customer",
+        "avatar": "https://example.com/avatars/customer4.jpg",
+        "email": "customer4@example.com"
+      },
+      {
+        "username": "customer5",
+        "password": "customer5",
+        "role": "customer",
+        "avatar": "https://example.com/avatars/customer5.jpg",
+        "email": "customer5@example.com"
+      },
+      {
+        "username": "customer6",
+        "password": "customer6",
+        "role": "customer",
+        "avatar": "https://example.com/avatars/customer6.jpg",
+        "email": "customer6@example.com"
+      },
+      {
+        "username": "customer7",
+        "password": "customer7",
+        "role": "customer",
+        "avatar": "https://example.com/avatars/customer7.jpg",
+        "email": "customer7@example.com"
+      },
+      {
+        "username": "customer8",
+        "password": "customer8",
+        "role": "customer",
+        "avatar": "https://example.com/avatars/customer8.jpg",
+        "email": "customer8@example.com"
+      },
+      {
+        "username": "customer9",
+        "password": "customer9",
+        "role": "customer",
+        "avatar": "https://example.com/avatars/customer9.jpg",
+        "email": "customer9@example.com"
+      },
+      {
+        "username": "customer10",
+        "password": "customer10",
+        "role": "customer",
+        "avatar": "https://example.com/avatars/customer10.jpg",
+        "email": "customer10@example.com"
+      }
+]

@@ -11,15 +11,15 @@ const CommentRouter = require("./CommentRouter")
 
 const routes = (app) => {
     app.use("/api/user", UserRouter);
-    app.use("api/topic", TopicRouter);
-    app.use("api/answer", AnswerRouter);
-    app.use("api/question", QuestionRouter);
-    app.use("api/quiz", QuizRouter);
-    app.use("api/team", TeamRouter);
-    app.use("api/requestjoin", RequestJoinRouter);
-    app.use("api/result", ResultRouter);
-    app.use("api/post", PostRouter);
-    app.use("api/comment", CommentRouter);
+    app.use("/api/topic", TopicRouter);
+    app.use("/api/answer", AnswerRouter);
+    app.use("/api/question", QuestionRouter);
+    app.use("/api/quiz", QuizRouter);
+    app.use("/api/team", TeamRouter);
+    app.use("/api/requestjoin", RequestJoinRouter);
+    app.use("/api/result", ResultRouter);
+    app.use("/api/post", PostRouter);
+    app.use("/api/comment", CommentRouter);
   };
   
   module.exports = routes;
