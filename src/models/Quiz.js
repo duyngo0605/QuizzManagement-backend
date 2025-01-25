@@ -10,6 +10,7 @@ const QuizSchema = new mongoose.Schema({
     idCreator: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     status: { type: String, required: true },
     time: { type: Number },
+    comments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Comment'}],
 }, { timestamps: true });
 
 
