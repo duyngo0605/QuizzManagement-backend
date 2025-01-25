@@ -37,7 +37,7 @@ const getPost = (id) => {
                     _id: id
                 })
                 if (Post === null) {
-                    resolve({
+                    reject({
                         status: 'ERR',
                         message: 'The Post is not defined'
                     })
@@ -62,7 +62,7 @@ const updatePost = async (PostId, data) => {
                 _id: PostId
             })
             if (!checkPost){
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The Post is not defined.'
                 })
@@ -89,7 +89,7 @@ const deletePost = (id) => {
                 _id: id
             })
             if (checkPost === null) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The Post is not defined'
                 })

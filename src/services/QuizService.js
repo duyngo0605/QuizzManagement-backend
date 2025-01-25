@@ -37,7 +37,7 @@ const getQuiz = (id) => {
                     _id: id
                 })
                 if (Quiz === null) {
-                    resolve({
+                    reject({
                         status: 'ERR',
                         message: 'The Quiz is not defined'
                     })
@@ -62,7 +62,7 @@ const updateQuiz = async (QuizId, data) => {
                 _id: QuizId
             })
             if (!checkQuiz){
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The Quiz is not defined.'
                 })
@@ -89,7 +89,7 @@ const deleteQuiz = (id) => {
                 _id: id
             })
             if (checkQuiz === null) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The Quiz is not defined'
                 })

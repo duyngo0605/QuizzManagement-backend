@@ -13,7 +13,7 @@ const createUser = async (newUser) => {
             })
     
             if (checkUser){
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The user was existed.'
                 })
@@ -112,7 +112,7 @@ const getUser = (id) => {
                     _id: id
                 })
                 if (user === null) {
-                    resolve({
+                    reject({
                         status: 'ERR',
                         message: 'The user is not defined'
                     })
@@ -137,7 +137,7 @@ const updateUser = async (userId, data) => {
                 _id: userId
             })
             if (!checkUser){
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The user is not defined.'
                 })
@@ -169,7 +169,7 @@ const deleteUser = (id) => {
                 _id: id
             })
             if (checkUser === null) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The user is not defined'
                 })

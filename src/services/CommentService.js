@@ -37,7 +37,7 @@ const getComment = (id) => {
                     _id: id
                 })
                 if (Comment === null) {
-                    resolve({
+                    reject({
                         status: 'ERR',
                         message: 'The Comment is not defined'
                     })
@@ -62,7 +62,7 @@ const updateComment = async (CommentId, data) => {
                 _id: CommentId
             })
             if (!checkComment){
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The Comment is not defined.'
                 })
@@ -89,7 +89,7 @@ const deleteComment = (id) => {
                 _id: id
             })
             if (checkComment === null) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The Comment is not defined'
                 })

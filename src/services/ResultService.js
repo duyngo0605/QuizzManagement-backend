@@ -37,7 +37,7 @@ const getResult = (id) => {
                     _id: id
                 })
                 if (Result === null) {
-                    resolve({
+                    reject({
                         status: 'ERR',
                         message: 'The Result is not defined'
                     })
@@ -62,7 +62,7 @@ const updateResult = async (ResultId, data) => {
                 _id: ResultId
             })
             if (!checkResult){
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The Result is not defined.'
                 })
@@ -89,7 +89,7 @@ const deleteResult = (id) => {
                 _id: id
             })
             if (checkResult === null) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The Result is not defined'
                 })

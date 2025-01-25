@@ -37,7 +37,7 @@ const getTeam = (id) => {
                     _id: id
                 })
                 if (Team === null) {
-                    resolve({
+                    reject({
                         status: 'ERR',
                         message: 'The Team is not defined'
                     })
@@ -62,7 +62,7 @@ const updateTeam = async (TeamId, data) => {
                 _id: TeamId
             })
             if (!checkTeam){
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The Team is not defined.'
                 })
@@ -89,7 +89,7 @@ const deleteTeam = (id) => {
                 _id: id
             })
             if (checkTeam === null) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The Team is not defined'
                 })

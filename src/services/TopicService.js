@@ -37,7 +37,7 @@ const getTopic = (id) => {
                     _id: id
                 })
                 if (Topic === null) {
-                    resolve({
+                    reject({
                         status: 'ERR',
                         message: 'The Topic is not defined'
                     })
@@ -62,7 +62,7 @@ const updateTopic = async (TopicId, data) => {
                 _id: TopicId
             })
             if (!checkTopic){
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The Topic is not defined.'
                 })
@@ -89,7 +89,7 @@ const deleteTopic = (id) => {
                 _id: id
             })
             if (checkTopic === null) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The Topic is not defined'
                 })

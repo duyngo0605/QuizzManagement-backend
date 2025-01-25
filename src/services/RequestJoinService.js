@@ -37,7 +37,7 @@ const getRequestJoin = (id) => {
                     _id: id
                 })
                 if (RequestJoin === null) {
-                    resolve({
+                    reject({
                         status: 'ERR',
                         message: 'The RequestJoin is not defined'
                     })
@@ -62,7 +62,7 @@ const updateRequestJoin = async (RequestJoinId, data) => {
                 _id: RequestJoinId
             })
             if (!checkRequestJoin){
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The RequestJoin is not defined.'
                 })
@@ -89,7 +89,7 @@ const deleteRequestJoin = (id) => {
                 _id: id
             })
             if (checkRequestJoin === null) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The RequestJoin is not defined'
                 })

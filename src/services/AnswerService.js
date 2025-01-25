@@ -37,7 +37,7 @@ const getAnswer = (id) => {
                     _id: id
                 })
                 if (Answer === null) {
-                    resolve({
+                    reject({
                         status: 'ERR',
                         message: 'The Answer is not defined'
                     })
@@ -62,7 +62,7 @@ const updateAnswer = async (AnswerId, data) => {
                 _id: AnswerId
             })
             if (!checkAnswer){
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The Answer is not defined.'
                 })
@@ -89,7 +89,7 @@ const deleteAnswer = (id) => {
                 _id: id
             })
             if (checkAnswer === null) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The Answer is not defined'
                 })
