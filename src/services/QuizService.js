@@ -25,7 +25,7 @@ const getQuiz = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             if (!id) {
-                const allQuiz = await Quiz.find()
+                const allQuiz = await Quiz.find().populate('topic')
                 resolve({
                     status: 'OK',
                     message: 'Success',
@@ -35,7 +35,7 @@ const getQuiz = (id) => {
             else {
                 const Quiz = await Quiz.findOne({
                     _id: id
-                })
+                }).populate('topic')
                 if (Quiz === null) {
                     reject({
                         status: 'ERR',
@@ -98,6 +98,56 @@ const deleteQuiz = (id) => {
             resolve({
                 status: 'OK',
                 message: 'Delete Quiz success',
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+const addQuestions = async (id, questions) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const quiz = await Quiz.findOne({
+                _id: id
+            })
+            if (!quiz) {
+                reject({
+                    status: 'ERR',
+                    message: 'The Quiz is not defined.'
+                })
+            }
+            quiz.questions.push(questions)
+            await quiz.save()
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: quiz
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+const removeQuestions = async (id, questions) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const quiz = await Quiz.findOne({
+                _id: id
+            })
+            if (!quiz) {
+                reject({
+                    status: 'ERR',
+                    message: 'The Quiz is not defined.'
+                })
+            }
+            quiz.questions.pull(questions)
+            await quiz.save()
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: quiz
             })
         } catch (e) {
             reject(e)
