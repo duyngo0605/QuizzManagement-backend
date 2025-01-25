@@ -33,10 +33,10 @@ const getRequestJoin = (id) => {
                 })
             }
             else {
-                const RequestJoin = await RequestJoin.findOne({
+                const requestJoin = await RequestJoin.findOne({
                     _id: id
                 })
-                if (RequestJoin === null) {
+                if (requestJoin === null) {
                     reject({
                         status: 'ERR',
                         message: 'The RequestJoin is not defined'
@@ -45,7 +45,7 @@ const getRequestJoin = (id) => {
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
-                    data: RequestJoin
+                    data: requestJoin
                 })
             }
         } catch (e) {

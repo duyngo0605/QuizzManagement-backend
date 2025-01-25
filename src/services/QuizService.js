@@ -25,7 +25,7 @@ const getQuiz = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             if (!id) {
-                const allQuiz = await Quiz.find().populate('topicId')
+                const allQuiz = await Quiz.find().populate('topicId').populate('questions')
                 resolve({
                     status: 'OK',
                     message: 'Success',
@@ -33,10 +33,11 @@ const getQuiz = (id) => {
                 })
             }
             else {
-                const Quiz = await Quiz.findOne({
+                const quiz = await Quiz.findOne({
                     _id: id
-                }).populate('topicId')
-                if (Quiz === null) {
+                }).populate('topicId').populate('questions')
+                console.log('debug')
+                if (quiz === null) {
                     reject({
                         status: 'ERR',
                         message: 'The Quiz is not defined'
@@ -45,7 +46,7 @@ const getQuiz = (id) => {
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
-                    data: Quiz
+                    data: quiz
                 })
             }
         } catch (e) {

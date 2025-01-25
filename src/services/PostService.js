@@ -33,10 +33,10 @@ const getPost = (id) => {
                 })
             }
             else {
-                const Post = await Post.findOne({
+                const post = await Post.findOne({
                     _id: id
                 })
-                if (Post === null) {
+                if (post === null) {
                     reject({
                         status: 'ERR',
                         message: 'The Post is not defined'
@@ -45,7 +45,7 @@ const getPost = (id) => {
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
-                    data: Post
+                    data: post
                 })
             }
         } catch (e) {

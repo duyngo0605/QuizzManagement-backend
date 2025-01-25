@@ -33,10 +33,10 @@ const getTeam = (id) => {
                 })
             }
             else {
-                const Team = await Team.findOne({
+                const team = await Team.findOne({
                     _id: id
                 })
-                if (Team === null) {
+                if (team === null) {
                     reject({
                         status: 'ERR',
                         message: 'The Team is not defined'
@@ -45,7 +45,7 @@ const getTeam = (id) => {
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
-                    data: Team
+                    data: team
                 })
             }
         } catch (e) {

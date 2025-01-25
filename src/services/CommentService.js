@@ -33,10 +33,10 @@ const getComment = (id) => {
                 })
             }
             else {
-                const Comment = await Comment.findOne({
+                const comment = await Comment.findOne({
                     _id: id
                 })
-                if (Comment === null) {
+                if (comment === null) {
                     reject({
                         status: 'ERR',
                         message: 'The Comment is not defined'
@@ -45,7 +45,7 @@ const getComment = (id) => {
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
-                    data: Comment
+                    data: comment
                 })
             }
         } catch (e) {

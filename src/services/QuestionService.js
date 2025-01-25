@@ -41,10 +41,10 @@ const getQuestion = (id) => {
                 })
             }
             else {
-                const Question = await Question.findOne({
+                const question = await Question.findOne({
                     _id: id
                 })
-                if (Question === null) {
+                if (question === null) {
                     reject({
                         status: 'ERR',
                         message: 'The Question is not defined'
@@ -53,7 +53,7 @@ const getQuestion = (id) => {
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
-                    data: Question
+                    data: question
                 })
             }
         } catch (e) {

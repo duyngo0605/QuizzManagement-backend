@@ -33,10 +33,10 @@ const getResult = (id) => {
                 })
             }
             else {
-                const Result = await Result.findOne({
+                const result = await Result.findOne({
                     _id: id
                 })
-                if (Result === null) {
+                if (result === null) {
                     reject({
                         status: 'ERR',
                         message: 'The Result is not defined'
@@ -45,7 +45,7 @@ const getResult = (id) => {
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
-                    data: Result
+                    data: result
                 })
             }
         } catch (e) {

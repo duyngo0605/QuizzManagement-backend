@@ -33,10 +33,10 @@ const getTopic = (id) => {
                 })
             }
             else {
-                const Topic = await Topic.findOne({
+                const topic = await Topic.findOne({
                     _id: id
                 })
-                if (Topic === null) {
+                if (topic === null) {
                     reject({
                         status: 'ERR',
                         message: 'The Topic is not defined'
@@ -45,7 +45,7 @@ const getTopic = (id) => {
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
-                    data: Topic
+                    data: topic
                 })
             }
         } catch (e) {
