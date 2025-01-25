@@ -25,7 +25,7 @@ const getQuiz = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             if (!id) {
-                const allQuiz = await Quiz.find().populate('topicId').populate('questions')
+                const allQuiz = await Quiz.find().populate('topicId')
                 resolve({
                     status: 'OK',
                     message: 'Success',
@@ -36,7 +36,6 @@ const getQuiz = (id) => {
                 const quiz = await Quiz.findOne({
                     _id: id
                 }).populate('topicId').populate('questions')
-                console.log('debug')
                 if (quiz === null) {
                     reject({
                         status: 'ERR',
