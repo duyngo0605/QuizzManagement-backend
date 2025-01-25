@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const { generateAccessToken, generateRefreshToken, decodeAccessToken } = require('./JwtService')
 
 const createUser = async (newUser) => {
+    console.log(newUser)
     return new Promise(async (resolve, reject) => {
         const { username, password, role, avatar, email } = newUser
 
