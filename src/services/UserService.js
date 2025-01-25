@@ -3,10 +3,14 @@ const bcrypt = require('bcrypt')
 const { generateAccessToken, generateRefreshToken, decodeAccessToken } = require('./JwtService')
 
 const createUser = async (newUser) => {
-    console.log(newUser)
     return new Promise(async (resolve, reject) => {
         const { username, password, role, avatar, email } = newUser
-
+        if (!username || !password) {
+            reject({
+                status: 'ERR',
+                message: 'The username and password are required.'
+            })
+        }
         try {
             const checkUser = await User.findOne({
                 username: username
@@ -46,7 +50,12 @@ const createUser = async (newUser) => {
 const loginUser = async (loginModel) => {
     return new Promise(async (resolve, reject) => {
         const { username, password} = loginModel
-        console.log(username, password)
+        if (!username || !password) {
+            reject({
+                status: 'ERR',
+                message: 'The username and password are required.'
+            })
+        }
         try {
             const checkUser = await User.findOne({
                 username: username
@@ -99,8 +108,8 @@ const loginUser = async (loginModel) => {
 const getUser = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!id) {console.log('debug')
-                const allUser = await User.find().populate('employee')
+            if (!id) {
+                const allUser = await User.find()
                 resolve({
                     status: 'OK',
                     message: 'Success',
