@@ -1,4 +1,5 @@
 const Topic = require('../models/Topic')
+const Quiz = require('../models/Quiz')
 
 const createTopic = async (newTopic) => {
     return new Promise(async (resolve, reject) => {
@@ -94,6 +95,11 @@ const deleteTopic = (id) => {
                     message: 'The Topic is not defined'
                 })
             }
+            await Quiz.updateMany(
+                { topicId: id }, // Điều kiện tìm kiếm quiz chứa topicId
+                { $pull: { topicId: id } } // Xóa topicId khỏi mảng
+            );
+
             await Topic.findByIdAndDelete(id)
             resolve({
                 status: 'OK',

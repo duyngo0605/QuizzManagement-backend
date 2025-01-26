@@ -14,6 +14,37 @@ const createUser =  async (req, res) => {
 }
 
 
+const createManyUsers = async (req, res) => {
+    try {
+        const Users = req.body;
+        if (!Array.isArray(Users) || Users.length === 0) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'The request body must be a non-empty array of Users',
+            });
+        }
+
+        const responses = [];
+        for (const question of Users) {
+            const response = await Userservice.createQuestion(question);
+            responses.push(response);
+        }
+
+        return res.status(200).json({
+            status: 'OK',
+            message: 'Users created successfully',
+            data: responses,
+        });
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERR',
+            message: 'Error creating Users',
+            error: e.message,
+        });
+    }
+};
+
+
 const getUser = async (req, res) => {
     try {
         const userId = req.params.id
@@ -137,4 +168,5 @@ module.exports = {
     getUser,
     refreshToken,
     logoutUser,
+    createManyUsers
 }

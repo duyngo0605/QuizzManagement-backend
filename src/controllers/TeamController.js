@@ -14,6 +14,38 @@ const createTeam =  async (req, res) => {
 }
 
 
+
+const createManyTeams = async (req, res) => {
+    try {
+        const Teams = req.body;
+        if (!Array.isArray(Teams) || Teams.length === 0) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'The request body must be a non-empty array of Teams',
+            });
+        }
+
+        const responses = [];
+        for (const question of Teams) {
+            const response = await Teamservice.createQuestion(question);
+            responses.push(response);
+        }
+
+        return res.status(200).json({
+            status: 'OK',
+            message: 'Teams created successfully',
+            data: responses,
+        });
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERR',
+            message: 'Error creating Teams',
+            error: e.message,
+        });
+    }
+};
+
+
 const getTeam = async (req, res) => {
     try {
         const TeamId = req.params.id
@@ -76,4 +108,5 @@ module.exports = {
     updateTeam,
     deleteTeam,
     getTeam,
+    createManyTeams
 }

@@ -13,6 +13,36 @@ const createPost =  async (req, res) => {
     }
 }
 
+const createManyPosts = async (req, res) => {
+    try {
+        const Posts = req.body;
+        if (!Array.isArray(Posts) || Posts.length === 0) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'The request body must be a non-empty array of Posts',
+            });
+        }
+
+        const responses = [];
+        for (const question of Posts) {
+            const response = await Postservice.createQuestion(question);
+            responses.push(response);
+        }
+
+        return res.status(200).json({
+            status: 'OK',
+            message: 'Posts created successfully',
+            data: responses,
+        });
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERR',
+            message: 'Error creating Posts',
+            error: e.message,
+        });
+    }
+};
+
 
 const getPost = async (req, res) => {
     try {
@@ -76,4 +106,5 @@ module.exports = {
     updatePost,
     deletePost,
     getPost,
+    createManyPosts
 }

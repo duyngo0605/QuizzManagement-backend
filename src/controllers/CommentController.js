@@ -13,6 +13,36 @@ const createComment =  async (req, res) => {
     }
 }
 
+const createManyComments = async (req, res) => {
+    try {
+        const Comments = req.body;
+        if (!Array.isArray(Comments) || Comments.length === 0) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'The request body must be a non-empty array of Comments',
+            });
+        }
+
+        const responses = [];
+        for (const question of Comments) {
+            const response = await Commentservice.createQuestion(question);
+            responses.push(response);
+        }
+
+        return res.status(200).json({
+            status: 'OK',
+            message: 'Comments created successfully',
+            data: responses,
+        });
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERR',
+            message: 'Error creating Comments',
+            error: e.message,
+        });
+    }
+};
+
 
 const getComment = async (req, res) => {
     try {
@@ -76,4 +106,5 @@ module.exports = {
     updateComment,
     deleteComment,
     getComment,
+    createManyComments
 }

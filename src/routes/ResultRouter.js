@@ -7,5 +7,6 @@ router.post('', ResultController.createResult)
 router.put('/:id', ResultController.updateResult)
 router.delete('/:id', ResultController.deleteResult)
 router.get('/:id?', ResultController.getResult)
+router.post('/many', ResultController.createManyResults)
 
 module.exports = router

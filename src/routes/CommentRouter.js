@@ -7,5 +7,6 @@ router.post('', CommentController.createComment)
 router.put('/:id', CommentController.updateComment)
 router.delete('/:id', CommentController.deleteComment)
 router.get('/:id?', CommentController.getComment)
+router.post('/many', CommentController.createManyComments)
 
 module.exports = router

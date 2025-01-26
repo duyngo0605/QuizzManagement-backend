@@ -13,6 +13,35 @@ const createQuiz =  async (req, res) => {
     }
 }
 
+const createManyQuizzes = async (req, res) => {
+    try {
+        const Quizzes = req.body;
+        if (!Array.isArray(Quizzes) || Quizzes.length === 0) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'The request body must be a non-empty array of Quizzes',
+            });
+        }
+
+        const responses = [];
+        for (const question of Quizzes) {
+            const response = await Quizzeservice.createQuestion(question);
+            responses.push(response);
+        }
+
+        return res.status(200).json({
+            status: 'OK',
+            message: 'Quizzes created successfully',
+            data: responses,
+        });
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERR',
+            message: 'Error creating Quizzes',
+            error: e.message,
+        });
+    }
+}
 
 const getQuiz = async (req, res) => {
     try {
@@ -75,7 +104,7 @@ const addQuestions = async (req, res) => {
     try {
         const QuizId = req.params.id
         const data = req.body
-        const response = await QuizService.addQuestions(QuizId, data)
+        const response = await QuizService.addQuizzes(QuizId, data)
         return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({
@@ -88,7 +117,7 @@ const removeQuestions = async (req, res) => {
     try {
         const QuizId = req.params.id
         const data = req.body
-        const response = await QuizService.removeQuestions(QuizId, data)
+        const response = await QuizService.removeQuizzes(QuizId, data)
         return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({
@@ -103,5 +132,6 @@ module.exports = {
     deleteQuiz,
     getQuiz,
     addQuestions,
-    removeQuestions
+    removeQuestions,
+    createManyQuizzes
 }

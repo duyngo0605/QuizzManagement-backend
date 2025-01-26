@@ -7,5 +7,6 @@ router.post('', RequestJoinController.createRequestJoin)
 router.put('/:id', RequestJoinController.updateRequestJoin)
 router.delete('/:id', RequestJoinController.deleteRequestJoin)
 router.get('/:id?', RequestJoinController.getRequestJoin)
+router.post('/many', RequestJoinController.createManyRequestJoins)
 
 module.exports = router

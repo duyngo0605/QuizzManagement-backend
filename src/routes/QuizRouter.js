@@ -9,5 +9,6 @@ router.delete('/:id', QuizController.deleteQuiz)
 router.get('/:id?', QuizController.getQuiz)
 router.post('/:id/questions', QuizController.addQuestions)
 router.delete('/:id/questions', QuizController.removeQuestions)
+router.post('/many', QuizController.createManyQuizzes)
 
 module.exports = router
