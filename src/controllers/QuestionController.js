@@ -13,6 +13,36 @@ const createQuestion =  async (req, res) => {
     }
 }
 
+const createManyQuestions = async (req, res) => {
+    try {
+        const questions = req.body;
+        if (!Array.isArray(questions) || questions.length === 0) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'The request body must be a non-empty array of questions',
+            });
+        }
+
+        const responses = [];
+        for (const question of questions) {
+            const response = await QuestionService.createQuestion(question);
+            responses.push(response);
+        }
+
+        return res.status(200).json({
+            status: 'OK',
+            message: 'Questions created successfully',
+            data: responses,
+        });
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERR',
+            message: 'Error creating questions',
+            error: e.message,
+        });
+    }
+};
+
 
 const getQuestion = async (req, res) => {
     try {
@@ -76,4 +106,5 @@ module.exports = {
     updateQuestion,
     deleteQuestion,
     getQuestion,
+    createManyQuestions,
 }
