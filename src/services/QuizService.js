@@ -1,4 +1,5 @@
 const Quiz = require('../models/Quiz')
+const User = require('../models/User')
 const { checkPermissions } = require('../middleware/authMiddleware');
 
 const createQuiz = async (newQuiz) => {
@@ -7,12 +8,20 @@ const createQuiz = async (newQuiz) => {
             const createdQuiz = await Quiz.create(newQuiz)
             if (createdQuiz)
             { 
+                if (createdQuiz.idCreator) {
+                    const user = await User.findOne({
+                        _id: createdQuiz.idCreator
+                    })
+                    user.library.quizzes.push(createdQuiz._id)
+                    await user.save()
+                }
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
                 data: createdQuiz
             })
             }
+            
         }
 
         catch (e) {
@@ -97,6 +106,12 @@ const deleteQuiz = (id, token) => {
                     message: 'The Quiz is not defined'
                 })
             }
+
+             const user = await User.findOne({
+                _id: checkQuiz.idCreator
+            })
+            user.library.quizzes.pull(id)
+            await user.save()
 
             await checkPermissions(token, checkQuiz.idCreator)
             await Quiz.findByIdAndDelete(id)

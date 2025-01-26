@@ -25,7 +25,7 @@ const createManyQuizzes = async (req, res) => {
 
         const responses = [];
         for (const question of Quizzes) {
-            const response = await Quizzeservice.createQuestion(question);
+            const response = await QuizService.createQuiz(question);
             responses.push(response);
         }
 

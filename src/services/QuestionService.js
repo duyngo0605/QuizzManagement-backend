@@ -1,5 +1,6 @@
 const Question = require('../models/Question')
 const Quiz = require('../models/Quiz')
+const User = require('../models/User')
 const { checkPermissions } = require('../middleware/authMiddleware');
 
 const createQuestion = async (newQuestion, token) => {
@@ -21,6 +22,13 @@ const createQuestion = async (newQuestion, token) => {
                 await checkPermissions(token, quiz.idCreator)
                 quiz.questions.push(createdQuestion._id)
                 await quiz.save()
+            }
+            if(newQuestion.idCreator){
+                const user = await User.findOne({
+                    _id: newQuestion.idCreator
+                })
+                user.library.questions.push(createdQuestion._id)
+                await user.save()
             }
         }
 
@@ -103,6 +111,12 @@ const deleteQuestion = async (id, token) => {
                     message: 'The Question is not defined.'
                 })
             }
+
+            const user = await User.findOne({
+                _id: checkQuestion.idCreator
+            })
+            user.library.questions.pull(checkQuestion._id)
+            await user.save()
 
             await checkPermissions(token, checkQuestion.idCreator);
 

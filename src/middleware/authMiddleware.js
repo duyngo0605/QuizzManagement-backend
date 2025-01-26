@@ -58,9 +58,7 @@ const verifyToken = (token) => {
 const checkPermissions = async (token, idCreator) => {
     try {
         const decoded = await verifyToken(token);
-        console.log(token)
         if (decoded.role === 'admin' || decoded.id == idCreator) {
-            console.log(idCreator)
             return true;
         }
         throw { status: 'ERR', message: 'You do not have sufficient permissions' };
