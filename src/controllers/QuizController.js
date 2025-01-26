@@ -45,8 +45,9 @@ const createManyQuizzes = async (req, res) => {
 
 const getQuiz = async (req, res) => {
     try {
+        const filter = req.query;
         const QuizId = req.params.id
-        const response = await QuizService.getQuiz(QuizId)
+        const response = await QuizService.getQuiz(QuizId, filter)
         return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({

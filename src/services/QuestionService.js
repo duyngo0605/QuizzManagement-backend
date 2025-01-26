@@ -39,15 +39,35 @@ const createQuestion = async (newQuestion, token) => {
 }
 
 
-const getQuestion = (id) => {
+const getQuestion = (id, filter) => {
     return new Promise(async (resolve, reject) => {
         try {
+            const countQuestion = await Question.countDocuments();
+            let allQuestion = [];
             if (!id) {
-                const allQuestion = await Question.find()
+                if(filter) {
+                    // Tạo điều kiện filter động
+                    const filterCondition = {};
+
+                    if (filter) {
+                        if (filter.content) {
+                            filterCondition.content = { $regex: filter.content, $options: 'i' }; // Tìm kiếm theo nội dung (không phân biệt hoa thường)
+                        }
+                        if (filter.type) {
+                            filterCondition.type = filter.type; // Tìm kiếm chính xác theo loại câu hỏi
+                        }
+                        if (filter.idCreator) {
+                            filterCondition.idCreator = filter.idCreator; // Tìm kiếm chính xác theo idCreator
+                        }
+                    }
+
+                }
+                allQuestion = await Question.find(filterCondition)
                 resolve({
                     status: 'OK',
                     message: 'Success',
-                    data: allQuestion
+                    data: allQuestion,
+                    total: countQuestion
                 })
             }
             else {
@@ -63,7 +83,8 @@ const getQuestion = (id) => {
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
-                    data: question
+                    data: question,
+                    total: countQuestion
                 })
             }
         } catch (e) {

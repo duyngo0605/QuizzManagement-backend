@@ -47,8 +47,9 @@ const createManyQuestions = async (req, res) => {
 
 const getQuestion = async (req, res) => {
     try {
+        const filter = req.query;
         const QuestionId = req.params.id
-        const response = await QuestionService.getQuestion(QuestionId)
+        const response = await QuestionService.getQuestion(QuestionId, filter)
         return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({

@@ -30,39 +30,66 @@ const createQuiz = async (newQuiz) => {
     })
 }
 
-
-const getQuiz = (id) => {
+const getQuiz = (id, filter) => {
     return new Promise(async (resolve, reject) => {
         try {
             if (!id) {
-                const allQuiz = await Quiz.find().populate('topicId')
+                const countQuiz = await Quiz.countDocuments();
+                let allQuiz = [];
+                if (filter) {
+                    const filterCondition = {};
+
+                    if (filter.name) {
+                        filterCondition.name = { $regex: filter.name, $options: 'i' }; // Tìm kiếm theo tên (không phân biệt hoa thường)
+                    }
+                    if (filter.status) {
+                        filterCondition.status = filter.status; // Tìm kiếm chính xác theo trạng thái
+                    }
+                    if (filter.idCreator) {
+                        filterCondition.idCreator = filter.idCreator; // Tìm kiếm chính xác theo idCreator
+                    }
+
+                    const allQuizFilter = await Quiz.find(filterCondition)
+                        .populate('topicId');
+
+                    resolve({
+                        status: 'OK',
+                        message: 'Success',
+                        data: allQuizFilter,
+                        total: countQuiz
+                    });
+                    return;
+                }
+
+                allQuiz = await Quiz.find().populate('topicId');
                 resolve({
                     status: 'OK',
                     message: 'Success',
-                    data: allQuiz
-                })
-            }
-            else {
-                const quiz = await Quiz.findOne({
-                    _id: id
-                }).populate('topicId').populate('questions')
-                if (quiz === null) {
+                    data: allQuiz,
+                    total: countQuiz
+                });
+            } else {
+                const quiz = await Quiz.findOne({ _id: id })
+                    .populate('topicId')
+                    .populate('questions');
+                if (!quiz) {
                     reject({
                         status: 'ERR',
                         message: 'The Quiz is not defined'
-                    })
+                    });
                 }
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
                     data: quiz
-                })
+                });
             }
         } catch (e) {
-            reject(e)
+            reject(e);
         }
-    })
-}
+    });
+};
+
 
 const updateQuiz = async (QuizId, data, token) => {
     return new Promise(async (resolve, reject) => {
