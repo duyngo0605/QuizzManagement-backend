@@ -58,6 +58,7 @@ const getQuiz = async (req, res) => {
 
 const updateQuiz =  async (req, res) => {    
     try {
+        const token = req.headers.authorization.split(' ')[1];
         const QuizId = req.params.id
         if (!QuizId)
         {
@@ -68,7 +69,7 @@ const updateQuiz =  async (req, res) => {
         }
 
         const data = req.body
-        const response = await QuizService.updateQuiz(QuizId, data)
+        const response = await QuizService.updateQuiz(QuizId, data, token)
         return res.status(200).json(response)
     }
 
@@ -81,6 +82,7 @@ const updateQuiz =  async (req, res) => {
 
 const deleteQuiz = async (req,res) => {
     try {
+        const token = req.headers.authorization.split(' ')[1];
         const QuizId = req.params.id
         if (!QuizId)
         {
@@ -89,7 +91,7 @@ const deleteQuiz = async (req,res) => {
                 message: 'The Quiz is not defined'
             })
         }
-        const response = await QuizService.deleteQuiz(QuizId)
+        const response = await QuizService.deleteQuiz(QuizId, token)
         return res.status(200).json(response)
     }
 
@@ -102,9 +104,10 @@ const deleteQuiz = async (req,res) => {
 
 const addQuestions = async (req, res) => {
     try {
+        const token = req.headers.authorization.split(' ')[1];
         const QuizId = req.params.id
         const data = req.body
-        const response = await QuizService.addQuizzes(QuizId, data)
+        const response = await QuizService.addQuestions(QuizId, data, token)
         return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({
@@ -115,9 +118,10 @@ const addQuestions = async (req, res) => {
 
 const removeQuestions = async (req, res) => {
     try {
+        const token = req.headers.authorization.split(' ')[1];
         const QuizId = req.params.id
         const data = req.body
-        const response = await QuizService.removeQuizzes(QuizId, data)
+        const response = await QuizService.removeQuestions(QuizId, data, token)
         return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({

@@ -1,4 +1,5 @@
 const Quiz = require('../models/Quiz')
+const { checkPermissions } = require('../middleware/authMiddleware');
 
 const createQuiz = async (newQuiz) => {
     return new Promise(async (resolve, reject) => {
@@ -54,7 +55,7 @@ const getQuiz = (id) => {
     })
 }
 
-const updateQuiz = async (QuizId, data) => {
+const updateQuiz = async (QuizId, data, token) => {
     return new Promise(async (resolve, reject) => {
 
         try {
@@ -67,6 +68,8 @@ const updateQuiz = async (QuizId, data) => {
                     message: 'The Quiz is not defined.'
                 })
             }
+
+            await checkPermissions(token, checkQuiz.idCreator)
 
             const updatedQuiz = await Quiz.findByIdAndUpdate(QuizId, data, {new: true})
             resolve({
@@ -82,7 +85,7 @@ const updateQuiz = async (QuizId, data) => {
     })
 }
 
-const deleteQuiz = (id) => {
+const deleteQuiz = (id, token) => {
     return new Promise(async (resolve, reject) => {
         try {
             const checkQuiz = await Quiz.findOne({
@@ -94,6 +97,8 @@ const deleteQuiz = (id) => {
                     message: 'The Quiz is not defined'
                 })
             }
+
+            await checkPermissions(token, checkQuiz.idCreator)
             await Quiz.findByIdAndDelete(id)
             resolve({
                 status: 'OK',
@@ -105,7 +110,7 @@ const deleteQuiz = (id) => {
     })
 }
 
-const addQuestions = async (id, data) => {
+const addQuestions = async (id, data, token) => {
     return new Promise(async (resolve, reject) => {
         try {
             const quiz = await Quiz.findOne({
@@ -117,6 +122,7 @@ const addQuestions = async (id, data) => {
                     message: 'The Quiz is not defined.'
                 })
             }
+            await checkPermissions(token, quiz.idCreator)
             const questions = data.questions
             questions.forEach(question => {
                  quiz.questions.push(question)
@@ -133,7 +139,7 @@ const addQuestions = async (id, data) => {
     })
 }
 
-const removeQuestions = async (id, data) => {
+const removeQuestions = async (id, data, token) => {
     return new Promise(async (resolve, reject) => {
         try {
             const quiz = await Quiz.findOne({
@@ -145,6 +151,7 @@ const removeQuestions = async (id, data) => {
                     message: 'The Quiz is not defined.'
                 })
             }
+            await checkPermissions(token, quiz.idCreator)
             const questions = data.questions
             questions.forEach(question => {
                 if (quiz.questions.includes(question))
