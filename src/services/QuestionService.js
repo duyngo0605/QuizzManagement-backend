@@ -102,6 +102,13 @@ const deleteQuestion = (id) => {
                     message: 'The Question is not defined'
                 })
             }
+            const checkQuiz = await Quiz.findOne({ questions: id });
+            if (checkQuiz) {
+                return reject({
+                    status: 'ERR',
+                    message: `Cannot delete question. It is associated with quiz ID: ${checkQuiz._id}`,
+                });
+            }
             await Question.findByIdAndDelete(id)
             resolve({
                 status: 'OK',
