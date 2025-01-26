@@ -1,0 +1,123 @@
+[
+    {
+      "content": "What is the chemical symbol for water?",
+      "score": 5,
+      "type": "selected-one",
+      "idCreator": "679490050e9a9e0d0a9d73af",
+      "answers": [
+        { "content": "H2O", "isCorrect": true },
+        { "content": "HO2", "isCorrect": false },
+        { "content": "H2", "isCorrect": false }
+      ],
+      "idQuiz": "6794a337e08b7318ef5d9725"
+    },
+    {
+      "content": "What planet is known as the Red Planet?",
+      "score": 5,
+      "type": "selected-one",
+      "idCreator": "679490050e9a9e0d0a9d73af",
+      "answers": [
+        { "content": "Mars", "isCorrect": true },
+        { "content": "Venus", "isCorrect": false },
+        { "content": "Jupiter", "isCorrect": false }
+      ],
+      "idQuiz": "6794a337e08b7318ef5d9725"
+    },
+    {
+      "content": "What is the powerhouse of the cell?",
+      "score": 5,
+      "type": "selected-one",
+      "idCreator": "679490050e9a9e0d0a9d73af",
+      "answers": [
+        { "content": "Mitochondria", "isCorrect": true },
+        { "content": "Nucleus", "isCorrect": false },
+        { "content": "Ribosome", "isCorrect": false }
+      ],
+      "idQuiz": "6794a337e08b7318ef5d9725"
+    },
+    {
+      "content": "What gas do plants primarily use during photosynthesis?",
+      "score": 5,
+      "type": "selected-one",
+      "idCreator": "679490050e9a9e0d0a9d73af",
+      "answers": [
+        { "content": "Carbon dioxide", "isCorrect": true },
+        { "content": "Oxygen", "isCorrect": false },
+        { "content": "Nitrogen", "isCorrect": false }
+      ],
+      "idQuiz": "6794a337e08b7318ef5d9725"
+    },
+    {
+      "content": "What is the human body’s largest organ?",
+      "score": 5,
+      "type": "selected-one",
+      "idCreator": "679490050e9a9e0d0a9d73af",
+      "answers": [
+        { "content": "Skin", "isCorrect": true },
+        { "content": "Liver", "isCorrect": false },
+        { "content": "Heart", "isCorrect": false }
+      ],
+      "idQuiz": "6794a337e08b7318ef5d9725"
+    },
+    {
+      "content": "What is Newton's third law of motion?",
+      "score": 5,
+      "type": "selected-one",
+      "idCreator": "679490050e9a9e0d0a9d73af",
+      "answers": [
+        { "content": "For every action, there is an equal and opposite reaction.", "isCorrect": true },
+        { "content": "Objects in motion stay in motion unless acted upon by an external force.", "isCorrect": false },
+        { "content": "Force equals mass times acceleration.", "isCorrect": false }
+      ],
+      "idQuiz": "6794a337e08b7318ef5d9725"
+    },
+    {
+      "content": "What is the speed of light in a vacuum?",
+      "score": 5,
+      "type": "selected-one",
+      "idCreator": "679490050e9a9e0d0a9d73af",
+      "answers": [
+        { "content": "Approximately 300,000 km/s", "isCorrect": true },
+        { "content": "Approximately 150,000 km/s", "isCorrect": false },
+        { "content": "Approximately 450,000 km/s", "isCorrect": false }
+      ],
+      "idQuiz": "6794a337e08b7318ef5d9725"
+    },
+    {
+      "content": "What is the value of π to two decimal places?",
+      "score": 5,
+      "type": "selected-one",
+      "idCreator": "679490050e9a9e0d0a9d73af",
+      "answers": [
+        { "content": "3.14", "isCorrect": true },
+        { "content": "3.12", "isCorrect": false },
+        { "content": "3.15", "isCorrect": false }
+      ],
+      "idQuiz": "6794a337e08b7318ef5d9725"
+    },
+    {
+      "content": "What is the approximate age of the Earth?",
+      "score": 5,
+      "type": "selected-one",
+      "idCreator": "679490050e9a9e0d0a9d73af",
+      "answers": [
+        { "content": "4.5 billion years", "isCorrect": true },
+        { "content": "3 billion years", "isCorrect": false },
+        { "content": "5.5 billion years", "isCorrect": false }
+      ],
+      "idQuiz": "6794a337e08b7318ef5d9725"
+    },
+    {
+      "content": "What element does the symbol 'O' represent on the periodic table?",
+      "score": 5,
+      "type": "selected-one",
+      "idCreator": "679490050e9a9e0d0a9d73af",
+      "answers": [
+        { "content": "Oxygen", "isCorrect": true },
+        { "content": "Osmium", "isCorrect": false },
+        { "content": "Oxalate", "isCorrect": false }
+      ],
+      "idQuiz": "6794a337e08b7318ef5d9725"
+    }
+  ]
+  

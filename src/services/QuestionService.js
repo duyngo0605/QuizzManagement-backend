@@ -1,7 +1,8 @@
 const Question = require('../models/Question')
 const Quiz = require('../models/Quiz')
+const { checkPermissions } = require('../middleware/authMiddleware');
 
-const createQuestion = async (newQuestion) => {
+const createQuestion = async (newQuestion, token) => {
     return new Promise(async (resolve, reject) => {
         try {
             const createdQuestion = await Question.create(newQuestion)
@@ -17,6 +18,7 @@ const createQuestion = async (newQuestion) => {
                 const quiz = await Quiz.findOne({
                     _id: newQuestion.idQuiz
                 })
+                await checkPermissions(token, quiz.idCreator)
                 quiz.questions.push(createdQuestion._id)
                 await quiz.save()
             }
@@ -62,12 +64,38 @@ const getQuestion = (id) => {
     })
 }
 
-const updateQuestion = async (QuestionId, data) => {
+const updateQuestion = async (id, data, token) => {
     return new Promise(async (resolve, reject) => {
-
         try {
             const checkQuestion = await Question.findOne({
-                _id: QuestionId
+                _id: id
+            })
+            if (!checkQuestion){
+                reject({
+                    status: 'ERR',
+                    message: 'The Question is not defined.'
+                })
+            }
+            console.log('debug')
+            await checkPermissions(token, checkQuestion.idCreator);
+
+            const updatedQuestion = await Question.findByIdAndUpdate(id, data, {new: true})
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: updatedQuestion,
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
+const deleteQuestion = async (id, token) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const checkQuestion = await Question.findOne({
+                _id: id
             })
             if (!checkQuestion){
                 reject({
@@ -76,32 +104,8 @@ const updateQuestion = async (QuestionId, data) => {
                 })
             }
 
-            const updatedQuestion = await Question.findByIdAndUpdate(QuestionId, data, {new: true})
-            resolve({
-                status: 'OK',
-                message: 'SUCCESS',
-                data: updatedQuestion
-            })
-        }
+            await checkPermissions(token, checkQuestion.idCreator);
 
-        catch (e) {
-            reject(e)
-        }
-    })
-}
-
-const deleteQuestion = (id) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const checkQuestion = await Question.findOne({
-                _id: id
-            })
-            if (checkQuestion === null) {
-                reject({
-                    status: 'ERR',
-                    message: 'The Question is not defined'
-                })
-            }
             const checkQuiz = await Quiz.findOne({ questions: id });
             if (checkQuiz) {
                 return reject({
@@ -109,16 +113,17 @@ const deleteQuestion = (id) => {
                     message: `Cannot delete question. It is associated with quiz ID: ${checkQuiz._id}`,
                 });
             }
-            await Question.findByIdAndDelete(id)
+
+            await Question.findByIdAndDelete(id);
             resolve({
                 status: 'OK',
                 message: 'Delete Question success',
-            })
+            });
         } catch (e) {
-            reject(e)
+            reject(e);
         }
-    })
-}
+    });
+};
 
 module.exports = {
     createQuestion,

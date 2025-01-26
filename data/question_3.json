@@ -1,0 +1,83 @@
+[
+    {
+      "content": "Chiến thắng Điện Biên Phủ đã đánh dấu sự kết thúc của ách thống trị thực dân ___ tại Việt Nam, đồng thời mở ra thời kỳ ___ trên toàn quốc.",
+      "score": 10,
+      "type": "drag-and-drop",
+      "idCreator": "679490050e9a9e0d0a9d73af",
+      "answers": ["Pháp", "độc lập"],
+      "idQuiz": "6795d93521df1e364df1f8e8"
+    },
+    {
+      "content": "Vua Quang Trung đã lãnh đạo quân đội chiến thắng ___ vào năm 1789, củng cố quyền lực và thống nhất ___ .",
+      "score": 10,
+      "type": "drag-and-drop",
+      "idCreator": "679490050e9a9e0d0a9d73af",
+      "answers": ["quân Thanh", "đất nước"],
+      "idQuiz": "6795d93521df1e364df1f8e8"
+    },
+    {
+      "content": "Cách mạng Tháng Tám năm ___ đã lật đổ chính quyền phong kiến, đồng thời khai sinh ra nước ___ .",
+      "score": 10,
+      "type": "drag-and-drop",
+      "idCreator": "679490050e9a9e0d0a9d73af",
+      "answers": ["1945", "Việt Nam Dân chủ Cộng hòa"],
+      "idQuiz": "6795d93521df1e364df1f8e8"
+    },
+    {
+      "content": "Triều Nguyễn suy yếu do sự xuất hiện của các cuộc xâm lược từ thực dân ___, chính sách ___ và thiếu sự đổi mới.",
+      "score": 10,
+      "type": "drag-and-drop",
+      "idCreator": "679490050e9a9e0d0a9d73af",
+      "answers": ["Pháp", "bảo thủ"],
+      "idQuiz": "6795d93521df1e364df1f8e8"
+    },
+    {
+      "content": "Chính sách Đổi Mới từ năm ___ đã đưa nền kinh tế Việt Nam từ cơ chế ___ sang nền kinh tế thị trường định hướng xã hội chủ nghĩa.",
+      "score": 10,
+      "type": "drag-and-drop",
+      "idCreator": "679490050e9a9e0d0a9d73af",
+      "answers": ["1986", "kế hoạch hóa tập trung"],
+      "idQuiz": "6795d93521df1e364df1f8e8"
+    },
+    {
+        "content": "Các Vua Hùng được coi là những người sáng lập ___ ở Việt Nam, với kinh đô đặt tại ___.",
+        "score": 10,
+        "type": "fill-in-the-blank",
+        "idCreator": "679490050e9a9e0d0a9d73af",
+        "answers": ["nước Văn Lang", "Phú Thọ"],
+        "idQuiz": "6795d93521df1e364df1f8e8"
+      },
+      {
+        "content": "Đường mòn Hồ Chí Minh là tuyến đường tiếp tế quan trọng trong ___ nối liền ___ và ___ qua mạng lưới đường mòn.",
+        "score": 10,
+        "type": "fill-in-the-blank",
+        "idCreator": "679490050e9a9e0d0a9d73af",
+        "answers": ["chiến tranh Việt Nam", "miền Bắc", "miền Nam"],
+        "idQuiz": "6795d93521df1e364df1f8e8"
+      },
+      {
+        "content": "Hiệp ước ___ năm 1883 đánh dấu việc thiết lập chế độ thuộc địa của Pháp tại ___ Việt Nam.",
+        "score": 10,
+        "type": "fill-in-the-blank",
+        "idCreator": "679490050e9a9e0d0a9d73af",
+        "answers": ["Huế", "Trung Bộ"],
+        "idQuiz": "6795d93521df1e364df1f8e8"
+      },
+      {
+        "content": "Bài thơ nổi tiếng \"Nam Quốc Sơn Hà\" được coi là bản ___ đầu tiên trong lịch sử Việt Nam.",
+        "score": 10,
+        "type": "fill-in-the-blank",
+        "idCreator": "679490050e9a9e0d0a9d73af",
+        "answers": ["tuyên ngôn độc lập"],
+        "idQuiz": "6795d93521df1e364df1f8e8"
+      },
+      {
+        "content": "Trong trận Bạch Đằng năm ___, tướng Trần Hưng Đạo đã sử dụng ___ để đánh bại đội quân ___ .",
+        "score": 10,
+        "type": "fill-in-the-blank",
+        "idCreator": "679490050e9a9e0d0a9d73af",
+        "answers": ["1288", "cọc gỗ", "Mông Cổ"],
+        "idQuiz": "6795d93521df1e364df1f8e8"
+      }
+  ]
+  

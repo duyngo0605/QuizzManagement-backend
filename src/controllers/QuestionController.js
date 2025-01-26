@@ -1,9 +1,9 @@
 const QuestionService = require('../services/QuestionService')
 
 const createQuestion =  async (req, res) => {
-
     try {
-        const response = await QuestionService.createQuestion(req.body)
+        const token = req.headers.authorization.split(' ')[1];
+        const response = await QuestionService.createQuestion(req.body, token)
         return res.status(200).json(response)
     }
     catch (e) {
@@ -15,6 +15,7 @@ const createQuestion =  async (req, res) => {
 
 const createManyQuestions = async (req, res) => {
     try {
+        const token = req.headers.authorization.split(' ')[1];
         const questions = req.body;
         if (!Array.isArray(questions) || questions.length === 0) {
             return res.status(400).json({
@@ -25,7 +26,7 @@ const createManyQuestions = async (req, res) => {
 
         const responses = [];
         for (const question of questions) {
-            const response = await QuestionService.createQuestion(question);
+            const response = await QuestionService.createQuestion(question, token);
             responses.push(response);
         }
 
@@ -59,6 +60,7 @@ const getQuestion = async (req, res) => {
 
 const updateQuestion =  async (req, res) => {    
     try {
+        const token = req.headers.authorization.split(' ')[1];
         const QuestionId = req.params.id
         if (!QuestionId)
         {
@@ -69,7 +71,7 @@ const updateQuestion =  async (req, res) => {
         }
 
         const data = req.body
-        const response = await QuestionService.updateQuestion(QuestionId, data)
+        const response = await QuestionService.updateQuestion(QuestionId, data, token)
         return res.status(200).json(response)
     }
 
@@ -82,6 +84,7 @@ const updateQuestion =  async (req, res) => {
 
 const deleteQuestion = async (req,res) => {
     try {
+        const token = req.headers.authorization.split(' ')[1];
         const QuestionId = req.params.id
         if (!QuestionId)
         {
@@ -90,7 +93,7 @@ const deleteQuestion = async (req,res) => {
                 message: 'The Question is not defined'
             })
         }
-        const response = await QuestionService.deleteQuestion(QuestionId)
+        const response = await QuestionService.deleteQuestion(QuestionId, token)
         return res.status(200).json(response)
     }
 
