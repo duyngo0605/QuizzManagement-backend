@@ -42,6 +42,7 @@ const createQuestion = async (newQuestion, token) => {
 const getQuestion = (id, filter) => {
     return new Promise(async (resolve, reject) => {
         try {
+            console.log('debug')
             const countQuestion = await Question.countDocuments();
             let allQuestion = [];
             if (!id) {
@@ -60,9 +61,16 @@ const getQuestion = (id, filter) => {
                             filterCondition.idCreator = filter.idCreator; // Tìm kiếm chính xác theo idCreator
                         }
                     }
-
+                    allQuestion = await Question.find(filterCondition)
+                    resolve({
+                        status: 'OK',
+                        message: 'Success',
+                        data: allQuestion,
+                        total: countQuestion
+                    })
+                    return;
                 }
-                allQuestion = await Question.find(filterCondition)
+                allQuestion = await Question.find()
                 resolve({
                     status: 'OK',
                     message: 'Success',
