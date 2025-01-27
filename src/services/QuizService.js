@@ -5,34 +5,36 @@ const { checkPermissions } = require('../middleware/authMiddleware');
 const createQuiz = async (newQuiz) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const createdQuiz = await Quiz.create(newQuiz)
-            if (createdQuiz)
-            { 
+            const createdQuiz = await Quiz.create(newQuiz);
+            if (createdQuiz) { 
                 if (createdQuiz.idCreator) {
-                    const user = await User.findOne({
-                        _id: createdQuiz.idCreator
-                    })
-                    user.library.quizzes.push(createdQuiz._id)
-                    await user.save()
+                    const user = await User.findOne({ _id: createdQuiz.idCreator });
+                    if (user) {
+                        user.library.quizzes.push(createdQuiz._id);
+                        await user.save();
+                    }
                 }
-            resolve({
-                status: 'OK',
-                message: 'SUCCESS',
-                data: createdQuiz
-            })
+                resolve({
+                    status: 'OK',
+                    message: 'SUCCESS',
+                    data: createdQuiz
+                });
             }
-            
+        } catch (e) {
+            reject(e);
         }
-
-        catch (e) {
-            reject(e)
-        }
-    })
-}
-
+    });
+};
 const getQuiz = (id, filter) => {
     return new Promise(async (resolve, reject) => {
         try {
+
+            if (id && !mongoose.Types.ObjectId.isValid(id)) {
+                return reject({
+                    status: 'ERR',
+                    message: 'Invalid Quiz ID',
+                });
+            }
             if (!id) {
                 const countQuiz = await Quiz.countDocuments();
                 let allQuiz = [];
@@ -211,6 +213,8 @@ const removeQuestions = async (id, data, token) => {
     })
 }
 
+
+
 module.exports = {
     createQuiz,
     getQuiz,
@@ -218,4 +222,5 @@ module.exports = {
     deleteQuiz,
     addQuestions,
     removeQuestions
+   
 }

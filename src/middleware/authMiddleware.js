@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
+const ACCESS_TOKEN = process.env.ACCESS_TOKEN || "access_token";
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN || "refresh_token";
 dotenv.config()
 
 const authMiddleWare = (req, res, next) => {
@@ -67,9 +69,37 @@ const checkPermissions = async (token, idCreator) => {
     }
 };
 
+const authenticateAccessToken = (req, res, next) => {
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) {
+            return res.status(401).json({ message: "Access token not provided" });
+        }
+
+        
+        const userData = verifyToken2(token, 'access');
+        req.user = userData; 
+        next(); 
+    } catch (e) {
+        return res.status(401).json({ message: e.message });
+    }
+};
+
+
+const verifyToken2 = (token, type = 'access') => {
+    try {
+        const secret = type === 'access' ? ACCESS_TOKEN : REFRESH_TOKEN;
+        return jwt.verify(token, secret); 
+    } catch (error) {
+        throw new Error(type === 'access' ? "Access token invalid or expired" : "Refresh token invalid or expired");
+    }
+};
+
 module.exports = {
     authMiddleWare,
     authUserMiddleWare,
     verifyToken,
-    checkPermissions
+    checkPermissions,
+    authenticateAccessToken,
+    verifyToken2
 }
