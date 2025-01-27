@@ -127,9 +127,18 @@ const getMyQuestion = async (req, res) => {
         }
         const userData = verifyToken2(token, 'access');
         const userId = userData.id;
+        const { name, status, sortField, sortOrder } = req.query;
 
+        
+        const filter = {
+         
+            content: name || null, 
+            sortField: sortField || null, 
+            sortOrder: sortOrder || 'asc',
+            idCreator: userId, 
+        };
     
-        const response = await QuestionService.getQuestion(null, { idCreator: userId });
+        const response = await QuestionService.getQuestion(null, filter);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(500).json({
