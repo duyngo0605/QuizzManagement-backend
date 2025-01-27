@@ -33,6 +33,13 @@ const getQuiz = (id, filter) => {
             if (!id) {
                 const countQuiz = await Quiz.countDocuments();
                 let allQuiz = [];
+
+                const sortCondition = {};
+                if (filter?.sortField) {
+                   
+                    sortCondition[filter.sortField] = filter.sortOrder === 'desc' ? -1 : 1;
+                }
+
                 if (filter) {
                     const filterCondition = {};
 
@@ -47,8 +54,8 @@ const getQuiz = (id, filter) => {
                     }
 
                     const allQuizFilter = await Quiz.find(filterCondition)
-                        .populate('topicId');
-
+                        .populate('topicId')
+                        .sort(sortCondition);
                     resolve({
                         status: 'OK',
                         message: 'Success',
