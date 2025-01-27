@@ -29,12 +29,7 @@ const getQuiz = (id, filter) => {
     return new Promise(async (resolve, reject) => {
         try {
 
-            if (id && !mongoose.Types.ObjectId.isValid(id)) {
-                return reject({
-                    status: 'ERR',
-                    message: 'Invalid Quiz ID',
-                });
-            }
+        
             if (!id) {
                 const countQuiz = await Quiz.countDocuments();
                 let allQuiz = [];
