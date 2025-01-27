@@ -1,17 +1,31 @@
 const QuestionService = require('../services/QuestionService')
+const { verifyToken2 } = require('../middleware/authMiddleware')
 
-const createQuestion =  async (req, res) => {
+
+const createQuestion = async (req, res) => {
     try {
-        const token = req.headers.authorization.split(' ')[1];
-        const response = await QuestionService.createQuestion(req.body, token)
-        return res.status(200).json(response)
+        const token = req.headers.authorization?.split(' ')[1];
+        if (!token) {
+            return res.status(401).json({ message: "Access token not provided" });
+        }
+
+        const userData = verifyToken2(token, 'access');
+        req.body.idCreator = userData.id;
+
+        const response = await QuestionService.createQuestion(req.body, token);
+
+        return res.status(200).json(response);
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({
+            status: 'ERR',
+            message: e.message || 'Internal Server Error',
+        });
     }
-    catch (e) {
-        return res.status(404).json({
-            message: e
-        })
-    }
-}
+};
+
+
+
 
 const createManyQuestions = async (req, res) => {
     try {
@@ -105,10 +119,31 @@ const deleteQuestion = async (req,res) => {
     }
 }
 
+const getMyQuestion = async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) {
+            return res.status(401).json({ message: "Access token not provided" });
+        }
+        const userData = verifyToken2(token, 'access');
+        const userId = userData.id;
+
+    
+        const response = await QuestionService.getQuestion(null, { idCreator: userId });
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERR',
+            message: e.message || 'Something went wrong',
+        });
+    }
+}
+
 module.exports = {
     createQuestion,
     updateQuestion,
     deleteQuestion,
     getQuestion,
     createManyQuestions,
+    getMyQuestion
 }
