@@ -46,9 +46,11 @@ const getQuestion = (id, filter) => {
             const countQuestion = await Question.countDocuments();
             let allQuestion = [];
             if (!id) {
+
+                const filterCondition = {};
                 if(filter) {
-                    // Tạo điều kiện filter động
-                    const filterCondition = {};
+                    
+                
 
                     if (filter) {
                         if (filter.content) {

@@ -1,17 +1,22 @@
 const QuizService = require('../services/QuizService')
-
-const createQuiz =  async (req, res) => {
-
+const { verifyToken2 } = require('../middleware/authMiddleware')
+const createQuiz = async (req, res) => {
     try {
-        const response = await QuizService.createQuiz(req.body)
-        return res.status(200).json(response)
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) {
+            return res.status(401).json({ message: "Access token not provided" });
+        }
+        const userData = verifyToken2(token, 'access');
+        req.body.idCreator = userData.id; 
+
+        const response = await QuizService.createQuiz(req.body);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(401).json({ message: e.message });
     }
-    catch (e) {
-        return res.status(404).json({
-            message: e
-        })
-    }
-}
+};
+
+
 
 const createManyQuizzes = async (req, res) => {
     try {
@@ -50,9 +55,10 @@ const getQuiz = async (req, res) => {
         const response = await QuizService.getQuiz(QuizId, filter)
         return res.status(200).json(response)
     } catch (e) {
-        return res.status(404).json({
-            message: e
-        })
+        return res.status(500).json({
+            status: 'ERR',
+            message: e.message || 'Internal Server Error',
+        });
     }
 }
 
@@ -131,6 +137,28 @@ const removeQuestions = async (req, res) => {
     }
 }
 
+const getMyQuiz = async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) {
+            return res.status(401).json({ message: "Access token not provided" });
+        }
+        const userData = verifyToken2(token, 'access');
+        const userId = userData.id;
+
+    
+        const response = await QuizService.getQuiz(null, { idCreator: userId });
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERR',
+            message: e.message || 'Something went wrong',
+        });
+    }
+};
+
+
+
 module.exports = {
     createQuiz,
     updateQuiz,
@@ -138,5 +166,6 @@ module.exports = {
     getQuiz,
     addQuestions,
     removeQuestions,
-    createManyQuizzes
+    createManyQuizzes,
+    getMyQuiz
 }
