@@ -176,5 +176,5 @@ module.exports = {
     addQuestions,
     removeQuestions,
     createManyQuizzes,
-    getMyQuiz
+    getMyQuiz,
 }

@@ -127,7 +127,7 @@ const getMyQuestion = async (req, res) => {
         }
         const userData = verifyToken2(token, 'access');
         const userId = userData.id;
-        const { name, status, sortField, sortOrder } = req.query;
+        const { name, sortField, sortOrder } = req.query;
 
         
         const filter = {
