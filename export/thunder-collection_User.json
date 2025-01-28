@@ -1,0 +1,111 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "User",
+    "collectionId": "d378d424-ad18-496b-887c-5177e11200b8",
+    "dateExported": "2025-01-28T07:27:20.392Z",
+    "version": "1.2",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "18292770-bbb4-447d-afa3-e6c339525f2e",
+            "colId": "d378d424-ad18-496b-887c-5177e11200b8",
+            "containerId": "",
+            "name": "log_in",
+            "url": "localhost:5000/api/user/log-in",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2025-01-26T02:00:40.869Z",
+            "modified": "2025-01-28T06:32:26.441Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTYyNWE0YWZkNmU4YWVkYzhmYzY0YSIsInVzZXJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzgwNDU5MjIsImV4cCI6MTc0MDYzNzkyMn0.AXuBrjE1gYMwE32pyaeN08yrkZByKyHfXPWQG1YfqF8"
+                }
+            ],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "198d5044-48b5-4732-a95c-0f7602493605",
+            "colId": "d378d424-ad18-496b-887c-5177e11200b8",
+            "containerId": "",
+            "name": "create_user",
+            "url": "localhost:5000/api/user",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2025-01-26T02:02:17.005Z",
+            "modified": "2025-01-26T12:08:03.665Z",
+            "headers": [
+                {
+                    "name": "token",
+                    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTQ5MDA1MGU5YTllMGQwYTlkNzNhZiIsInVzZXJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mzc4NTc1MjYsImV4cCI6MTc0MDQ0OTUyNn0.yu8mDutzOpI7OfZFI18DCgaZedBK8LM76V1SVIdbT8w"
+                }
+            ],
+            "body": {
+                "type": "json",
+                "raw": "{\n        \"username\": \"admin\",\n        \"password\": \"admin\",\n        \"role\": \"admin\",\n        \"avatar\": \"admin@gmail.com\",\n        \"email\": \"admin@example.com\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "1261c72e-8dec-4d82-b62d-f8c039310721",
+            "colId": "d378d424-ad18-496b-887c-5177e11200b8",
+            "containerId": "",
+            "name": "update_user",
+            "url": "localhost:5000/api/user/67959a622be644fc0f416866",
+            "method": "PUT",
+            "sortNum": 30000,
+            "created": "2025-01-26T02:05:45.929Z",
+            "modified": "2025-01-26T02:14:11.088Z",
+            "headers": [
+                {
+                    "name": "token",
+                    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTQ5MDA1MGU5YTllMGQwYTlkNzNhZiIsInVzZXJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mzc4NTc1MjYsImV4cCI6MTc0MDQ0OTUyNn0.yu8mDutzOpI7OfZFI18DCgaZedBK8LM76V1SVIdbT8w"
+                }
+            ],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"avatar\": \"https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "b8d7fcac-764b-475a-8429-c05540513c96",
+            "colId": "d378d424-ad18-496b-887c-5177e11200b8",
+            "containerId": "",
+            "name": "get_user",
+            "url": "localhost:5000/api/user",
+            "method": "GET",
+            "sortNum": 40000,
+            "created": "2025-01-26T02:06:01.855Z",
+            "modified": "2025-01-27T07:04:36.221Z",
+            "headers": [
+                {
+                    "name": "token",
+                    "value": "Bearer v"
+                }
+            ]
+        },
+        {
+            "_id": "c3bfa165-04ba-4327-af02-caa536378af8",
+            "colId": "d378d424-ad18-496b-887c-5177e11200b8",
+            "containerId": "",
+            "name": "delete_user",
+            "url": "localhost:5000/api/user/67959a622be644fc0f416866",
+            "method": "DELETE",
+            "sortNum": 50000,
+            "created": "2025-01-26T02:13:10.808Z",
+            "modified": "2025-01-26T02:14:21.790Z",
+            "headers": [
+                {
+                    "name": "token",
+                    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTQ5MDA1MGU5YTllMGQwYTlkNzNhZiIsInVzZXJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mzc4NTc1MjYsImV4cCI6MTc0MDQ0OTUyNn0.yu8mDutzOpI7OfZFI18DCgaZedBK8LM76V1SVIdbT8w"
+                }
+            ]
+        }
+    ],
+    "ref": "FKu2l8fapZUtr24cUD9DPsojVSedNxl6LUhNpupL1KEPoYfBisAiNLWzgX6e47ZtvuYS2QmiuphQw8-dAPL_dA"
+}

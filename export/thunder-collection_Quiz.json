@@ -1,0 +1,125 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "Quiz",
+    "collectionId": "791aa600-6472-4e6c-b7bc-2eb685c6fcd8",
+    "dateExported": "2025-01-28T07:27:29.799Z",
+    "version": "1.2",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "41b92f9b-c906-4c70-8775-3871ec60e4af",
+            "colId": "791aa600-6472-4e6c-b7bc-2eb685c6fcd8",
+            "containerId": "",
+            "name": "create_quiz",
+            "url": "localhost:5000/api/quiz",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2025-01-26T02:18:48.988Z",
+            "modified": "2025-01-26T12:39:53.078Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTYyNWE0YWZkNmU4YWVkYzhmYzY0YSIsInVzZXJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mzc4OTM5NTksImV4cCI6MTc0MDQ4NTk1OX0.Ts7EMXFctvR6HWDuZEiQ2RIqAqNBM4MmOWdJb0T_iH4"
+                }
+            ],
+            "body": {
+                "type": "json",
+                "raw": "{\r\n        \"name\": \"General Knowledge Quiz\",\r\n        \"description\": \"Challenge yourself with a variety of topics in this quiz.\",\r\n        \"topicId\": [\"67949814dd8a5365a7e37c42\"],\r\n        \"questions\": [],\r\n        \"image\": \"https://www.themanthanschool.co.in/blog/wp-content/uploads/2019/12/general-knowledge.jpg\",\r\n        \"idCreator\": \"679625a4afd6e8aedc8fc64a\",\r\n        \"status\": \"active\",\r\n        \"time\": 300,\r\n        \"comments\": []\r\n    }",
+                "form": []
+            }
+        },
+        {
+            "_id": "1b499d40-e5b8-40eb-861b-c0dfa3b9fed7",
+            "colId": "791aa600-6472-4e6c-b7bc-2eb685c6fcd8",
+            "containerId": "",
+            "name": "get_all_quizzes",
+            "url": "localhost:5000/api/quiz?name=art&status=active&idCreator=679625a4afd6e8aedc8fc64a",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2025-01-26T02:48:13.623Z",
+            "modified": "2025-01-26T14:04:39.944Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "name",
+                    "value": "art",
+                    "isPath": false
+                },
+                {
+                    "name": "status",
+                    "value": "active",
+                    "isPath": false
+                },
+                {
+                    "name": "idCreator",
+                    "value": "679625a4afd6e8aedc8fc64a",
+                    "isPath": false
+                }
+            ]
+        },
+        {
+            "_id": "cf49112c-1d6f-4eca-bada-4bc58b753098",
+            "colId": "791aa600-6472-4e6c-b7bc-2eb685c6fcd8",
+            "containerId": "",
+            "name": "create_quiz",
+            "url": "localhost:5000/api/quiz",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2025-01-26T06:41:46.680Z",
+            "modified": "2025-01-26T06:41:57.210Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\r\n        \"name\": \"History Quiz\",\r\n        \"description\": \"How well do you know historical events and figures?\",\r\n        \"topicId\": [\"679497eadd8a5365a7e37c32\"],\r\n        \"questions\": [],\r\n        \"image\": \"https://www.mooc.org/hubfs/history.jpg\",\r\n        \"idCreator\": \"679490050e9a9e0d0a9d73af\",\r\n        \"status\": \"active\",\r\n        \"time\": 300,\r\n        \"comments\": []\r\n    }",
+                "form": []
+            }
+        },
+        {
+            "_id": "d3dfd8f0-4dcc-4b02-be9f-af5d9a5f5806",
+            "colId": "791aa600-6472-4e6c-b7bc-2eb685c6fcd8",
+            "containerId": "",
+            "name": "get_quiz",
+            "url": "localhost:5000/api/quiz/67962730eb961fb66ba8b525",
+            "method": "GET",
+            "sortNum": 40000,
+            "created": "2025-01-28T06:19:27.314Z",
+            "modified": "2025-01-28T06:50:59.322Z",
+            "headers": []
+        },
+        {
+            "_id": "42fdbb1b-d59b-4d65-8da3-3cf55d13a283",
+            "colId": "791aa600-6472-4e6c-b7bc-2eb685c6fcd8",
+            "containerId": "",
+            "name": "get_practice",
+            "url": "localhost:5000/api/quiz/practice/67962730eb961fb66ba8b52d",
+            "method": "GET",
+            "sortNum": 50000,
+            "created": "2025-01-28T06:22:09.878Z",
+            "modified": "2025-01-28T07:05:43.554Z",
+            "headers": []
+        },
+        {
+            "_id": "560a8c7a-c147-4b1e-8428-68746b515080",
+            "colId": "791aa600-6472-4e6c-b7bc-2eb685c6fcd8",
+            "containerId": "",
+            "name": "create_result",
+            "url": "localhost:5000/api/result",
+            "method": "POST",
+            "sortNum": 60000,
+            "created": "2025-01-28T07:02:31.529Z",
+            "modified": "2025-01-28T07:22:00.566Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTYyNWE0YWZkNmU4YWVkYzhmYzY0YSIsInVzZXJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzgwNDU5NDcsImV4cCI6MTc0MDYzNzk0N30.W3MVFAYp1JTI27Y5DR6RoxTh5TtkHDRRITfWtt7ZZHU"
+                }
+            ],
+            "body": {
+                "type": "json",
+                "raw": "{\r\n  \"questions\": [\r\n    \"679880645b57cfcd3bccf70d\",\r\n    \"679880645b57cfcd3bccf712\",\r\n    \"679880645b57cfcd3bccf719\",\r\n    \"679880645b57cfcd3bccf721\",\r\n    \"679880645b57cfcd3bccf72a\",\r\n    \"679880645b57cfcd3bccf733\",\r\n    \"679880645b57cfcd3bccf73c\",\r\n    \"679880655b57cfcd3bccf745\",\r\n    \"679880655b57cfcd3bccf757\",\r\n    \"679880655b57cfcd3bccf74e\"\r\n  ],\r\n  \"userAnswers\": [\r\n    [{\r\n      \"content\": \"x = 2 or x = 3\"\r\n    }],\r\n    [{\r\n      \"content\": \"f'(x) = 6x + 2\"\r\n    }],\r\n    [{\r\n      \"content\": \"∫f(x) dx = (1/4)x⁴ + C\"\r\n    }],\r\n    [{\r\n      \"content\": \"Radius = 5 cm\"\r\n    }],\r\n    [{\r\n      \"content\": \"x = 2\"\r\n    }],\r\n    [{\r\n      \"content\": \"180°\"\r\n    }],\r\n    [{\r\n      \"content\": \"1 mile per minute\"\r\n    }],\r\n    [{\r\n      \"content\": \"3.14\"\r\n    }],\r\n    [{\r\n      \"content\": \"Volume = 84.78 cm³\"\r\n    }],\r\n    [{\r\n      \"content\": \"x = 2\"\r\n    }]\r\n  ],\r\n  \"status\": \"done\",\r\n  \"completeTime\": 300\r\n}\r\n",
+                "form": []
+            }
+        }
+    ],
+    "ref": "uQjVfdsyfTdHOUSOFlQdP4rnZSmJr30qMi8aBepaReDDi6pPfN4NEG3jAgELh6Czug1eNuKhyuS6qsim7C-c_A"
+}

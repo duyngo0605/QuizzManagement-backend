@@ -1,0 +1,57 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "Question",
+    "collectionId": "9c3c8771-3194-4eab-896b-cdcfa1f0d1b2",
+    "dateExported": "2025-01-28T07:27:41.055Z",
+    "version": "1.2",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "0a33791f-d0ad-461c-99dd-6bbe65ec3d74",
+            "colId": "9c3c8771-3194-4eab-896b-cdcfa1f0d1b2",
+            "containerId": "",
+            "name": "create_many_questions",
+            "url": "localhost:5000/api/question/many",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2025-01-26T02:28:01.120Z",
+            "modified": "2025-01-28T06:52:11.542Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTYyNWE0YWZkNmU4YWVkYzhmYzY0YSIsInVzZXJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzgwNDU5MjIsImV4cCI6MTc0MDYzNzkyMn0.AXuBrjE1gYMwE32pyaeN08yrkZByKyHfXPWQG1YfqF8"
+                }
+            ],
+            "body": {
+                "type": "json",
+                "raw": "[\r\n    {\r\n      \"content\": \"Solve the quadratic equation: x² - 5x + 6 = 0\",\r\n      \"score\": 5,\r\n      \"type\": \"selected-one\",\r\n      \"idCreator\": \"679625a4afd6e8aedc8fc64a\",\r\n      \"answers\": [\r\n        { \"content\": \"x = 2 or x = 3\", \"isCorrect\": true },\r\n        { \"content\": \"x = 1 or x = -6\", \"isCorrect\": false },\r\n        { \"content\": \"x = 0 or x = 6\", \"isCorrect\": false }\r\n      ],\r\n      \"idQuiz\": \"67962730eb961fb66ba8b525\"\r\n    },\r\n    {\r\n      \"content\": \"What is the derivative of the function f(x) = 3x² + 2x - 1?\",\r\n      \"score\": 5,\r\n      \"type\": \"selected-one\",\r\n      \"idCreator\": \"679625a4afd6e8aedc8fc64a\",\r\n      \"answers\": [\r\n        { \"content\": \"f'(x) = 6x + 2\", \"isCorrect\": true },\r\n        { \"content\": \"f'(x) = 3x + 1\", \"isCorrect\": false },\r\n        { \"content\": \"f'(x) = 3x - 1\", \"isCorrect\": false }\r\n      ],\r\n      \"idQuiz\": \"67962730eb961fb66ba8b525\"\r\n    },\r\n    {\r\n      \"content\": \"What is the integral of the function f(x) = x³?\",\r\n      \"score\": 5,\r\n      \"type\": \"selected-one\",\r\n      \"idCreator\": \"679625a4afd6e8aedc8fc64a\",\r\n      \"answers\": [\r\n        { \"content\": \"∫f(x) dx = (1/4)x⁴ + C\", \"isCorrect\": true },\r\n        { \"content\": \"∫f(x) dx = (1/3)x⁴ + C\", \"isCorrect\": false },\r\n        { \"content\": \"∫f(x) dx = (1/5)x⁴ + C\", \"isCorrect\": false }\r\n      ],\r\n      \"idQuiz\": \"67962730eb961fb66ba8b525\"\r\n    },\r\n    {\r\n      \"content\": \"If the area of a circle is 78.5 cm², what is the radius? (Use π ≈ 3.14)\",\r\n      \"score\": 5,\r\n      \"type\": \"selected-one\",\r\n      \"idCreator\": \"679625a4afd6e8aedc8fc64a\",\r\n      \"answers\": [\r\n        { \"content\": \"Radius = 5 cm\", \"isCorrect\": true },\r\n        { \"content\": \"Radius = 3 cm\", \"isCorrect\": false },\r\n        { \"content\": \"Radius = 7 cm\", \"isCorrect\": false }\r\n      ],\r\n      \"idQuiz\": \"67962730eb961fb66ba8b525\"\r\n    },\r\n    {\r\n      \"content\": \"Solve for x: 2x + 3 = 7\",\r\n      \"score\": 5,\r\n      \"type\": \"selected-one\",\r\n      \"idCreator\": \"679625a4afd6e8aedc8fc64a\",\r\n      \"answers\": [\r\n        { \"content\": \"x = 2\", \"isCorrect\": true },\r\n        { \"content\": \"x = 1\", \"isCorrect\": false },\r\n        { \"content\": \"x = 3\", \"isCorrect\": false }\r\n      ],\r\n      \"idQuiz\": \"67962730eb961fb66ba8b525\"\r\n    },\r\n    {\r\n      \"content\": \"What is the sum of the angles in a triangle?\",\r\n      \"score\": 5,\r\n      \"type\": \"selected-one\",\r\n      \"idCreator\": \"679625a4afd6e8aedc8fc64a\",\r\n      \"answers\": [\r\n        { \"content\": \"180°\", \"isCorrect\": true },\r\n        { \"content\": \"90°\", \"isCorrect\": false },\r\n        { \"content\": \"360°\", \"isCorrect\": false }\r\n      ],\r\n      \"idQuiz\": \"67962730eb961fb66ba8b525\"\r\n    },\r\n    {\r\n      \"content\": \"If a car travels 60 miles in 1 hour, what is its speed in miles per minute?\",\r\n      \"score\": 5,\r\n      \"type\": \"selected-one\",\r\n      \"idCreator\": \"679625a4afd6e8aedc8fc64a\",\r\n      \"answers\": [\r\n        { \"content\": \"1 mile per minute\", \"isCorrect\": true },\r\n        { \"content\": \"2 miles per minute\", \"isCorrect\": false },\r\n        { \"content\": \"0.5 miles per minute\", \"isCorrect\": false }\r\n      ],\r\n      \"idQuiz\": \"67962730eb961fb66ba8b525\"\r\n    },\r\n    {\r\n      \"content\": \"What is the value of π to two decimal places?\",\r\n      \"score\": 5,\r\n      \"type\": \"selected-one\",\r\n      \"idCreator\": \"679625a4afd6e8aedc8fc64a\",\r\n      \"answers\": [\r\n        { \"content\": \"3.14\", \"isCorrect\": true },\r\n        { \"content\": \"3.12\", \"isCorrect\": false },\r\n        { \"content\": \"3.15\", \"isCorrect\": false }\r\n      ],\r\n      \"idQuiz\": \"67962730eb961fb66ba8b525\"\r\n    },\r\n    {\r\n      \"content\": \"Solve for x: 3x² = 12\",\r\n      \"score\": 5,\r\n      \"type\": \"selected-one\",\r\n      \"idCreator\": \"679625a4afd6e8aedc8fc64a\",\r\n      \"answers\": [\r\n        { \"content\": \"x = 2\", \"isCorrect\": true },\r\n        { \"content\": \"x = 4\", \"isCorrect\": false },\r\n        { \"content\": \"x = 1\", \"isCorrect\": false }\r\n      ],\r\n      \"idQuiz\": \"67962730eb961fb66ba8b525\"\r\n    },\r\n    {\r\n      \"content\": \"What is the volume of a cylinder with radius 3 cm and height 5 cm? (Use π ≈ 3.14)\",\r\n      \"score\": 5,\r\n      \"type\": \"selected-one\",\r\n      \"idCreator\": \"679625a4afd6e8aedc8fc64a\",\r\n      \"answers\": [\r\n        { \"content\": \"Volume = 84.78 cm³\", \"isCorrect\": true },\r\n        { \"content\": \"Volume = 50.24 cm³\", \"isCorrect\": false },\r\n        { \"content\": \"Volume = 94.2 cm³\", \"isCorrect\": false }\r\n      ],\r\n      \"idQuiz\": \"67962730eb961fb66ba8b525\"\r\n    }\r\n  ]",
+                "form": []
+            }
+        },
+        {
+            "_id": "16f1e25b-23a1-46d3-be8c-08917dc532e5",
+            "colId": "9c3c8771-3194-4eab-896b-cdcfa1f0d1b2",
+            "containerId": "",
+            "name": "delete_question",
+            "url": "localhost:5000/api/question/67959e0d7111e583fbf48a19",
+            "method": "DELETE",
+            "sortNum": 20000,
+            "created": "2025-01-26T02:32:46.806Z",
+            "modified": "2025-01-26T02:33:24.561Z",
+            "headers": []
+        },
+        {
+            "_id": "28ca6e6a-c09e-43f7-93e2-a54d2e41eefe",
+            "colId": "9c3c8771-3194-4eab-896b-cdcfa1f0d1b2",
+            "containerId": "",
+            "name": "get_questions",
+            "url": "localhost:5000/api/question",
+            "method": "GET",
+            "sortNum": 30000,
+            "created": "2025-01-27T07:03:40.131Z",
+            "modified": "2025-01-27T07:04:06.285Z",
+            "headers": []
+        }
+    ],
+    "ref": "p3Ah-UXUvWIcLWJZr7fk0X38vqfG9wbWNbI0CPKjuWt4oJZc88zsxR7--RlQY1rCCXqxo8ApQt9362Yn2jbCLw"
+}
