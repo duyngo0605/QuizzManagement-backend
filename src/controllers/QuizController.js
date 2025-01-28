@@ -69,7 +69,7 @@ const updateQuiz =  async (req, res) => {
         const QuizId = req.params.id
         if (!QuizId)
         {
-            return res.status(200).json({
+            return res.status(404).json({
                 status: 'ERR',
                 message: 'The Quiz is required'
             })
@@ -145,9 +145,18 @@ const getMyQuiz = async (req, res) => {
         }
         const userData = verifyToken2(token, 'access');
         const userId = userData.id;
+        const { name, status, sortField, sortOrder } = req.query;
 
+        
+        const filter = {
+            idCreator: userId, 
+            name: name || null, 
+            status: status || null, 
+            sortField: sortField || null, 
+            sortOrder: sortOrder || 'asc',
+        };
     
-        const response = await QuizService.getQuiz(null, { idCreator: userId });
+        const response = await QuizService.getQuiz(null,filter);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(500).json({
@@ -167,5 +176,5 @@ module.exports = {
     addQuestions,
     removeQuestions,
     createManyQuizzes,
-    getMyQuiz
+    getMyQuiz,
 }

@@ -47,6 +47,11 @@ const getQuestion = (id, filter) => {
             let allQuestion = [];
             if (!id) {
 
+                const sortCondition = {};
+                if (filter?.sortField) {
+                   
+                    sortCondition[filter.sortField] = filter.sortOrder === 'desc' ? -1 : 1;
+                }
                 const filterCondition = {};
                 if(filter) {
                     
@@ -72,7 +77,8 @@ const getQuestion = (id, filter) => {
                     })
                     return;
                 }
-                allQuestion = await Question.find()
+                allQuestion = await Question.find(filterCondition).sort(sortCondition);
+
                 resolve({
                     status: 'OK',
                     message: 'Success',
