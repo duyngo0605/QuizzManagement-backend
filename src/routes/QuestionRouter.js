@@ -10,6 +10,6 @@ router.post('', QuestionController.createQuestion)
 router.put('/:id', QuestionController.updateQuestion)
 router.delete('/:id', QuestionController.deleteQuestion)
 router.get('/:id?', QuestionController.getQuestion)
-
+router.post('/many', QuestionController.createManyQuestions)
 
 module.exports = router
