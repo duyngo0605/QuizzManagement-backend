@@ -215,7 +215,55 @@ const removeQuestions = async (id, data, token) => {
     })
 }
 
+const getPractice = async (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const quiz = await Quiz.findOne({
+                _id: id
+            }).populate('questions');
 
+            if (!quiz) {
+                reject({
+                    status: 'ERR',
+                    message: 'The Quiz is not defined.'
+                });
+                return;
+            }
+
+            const questions = quiz.questions.map(question => {
+                const modifiedQuestion = question.toObject();
+
+                if (modifiedQuestion.type === 'constructed' || modifiedQuestion.type === 'fill-in-the-blank') {
+                    // Ẩn đáp án đúng đối với constructed và fill-in-the-blank
+                    modifiedQuestion.answers = modifiedQuestion.answers.map(answer => {
+                        return {
+                            ...answer,
+                            content: '' // Ẩn nội dung của đáp án
+                        };
+                    });
+                } else {
+                    // Trộn thứ tự các câu trả lời và đặt isCorrect về false
+                    modifiedQuestion.answers = modifiedQuestion.answers.sort(() => Math.random() - 0.5).map(answer => {
+                        return {
+                            ...answer,
+                            isCorrect: false // Đặt isCorrect về false
+                        };
+                    });
+                }
+
+                return modifiedQuestion;
+            });
+
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: questions
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 
 module.exports = {
     createQuiz,
@@ -223,6 +271,6 @@ module.exports = {
     updateQuiz,
     deleteQuiz,
     addQuestions,
-    removeQuestions
-   
+    removeQuestions,
+    getPractice
 }

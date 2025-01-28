@@ -10,5 +10,6 @@ router.get('/:id?', QuizController.getQuiz)
 router.post('/:id/questions', QuizController.addQuestions)
 router.delete('/:id/questions', QuizController.removeQuestions)
 router.post('/many', QuizController.createManyQuizzes)
+router.get('/practice/:id', QuizController.getPractice)
 
 module.exports = router

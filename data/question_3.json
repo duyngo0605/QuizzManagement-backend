@@ -7,7 +7,8 @@
       { "content": "Pháp", "isCorrect": true },
       { "content": "độc lập", "isCorrect": true }
     ],
-    "idCreator": "679490050e9a9e0d0a9d73af"
+    "idCreator": "679625a4afd6e8aedc8fc64a",
+    "idQuiz": "67962730eb961fb66ba8b52d"
   },
   {
     "content": "Vua Quang Trung đã lãnh đạo quân đội chiến thắng ___ vào năm 1789, củng cố quyền lực và thống nhất ___ .",
@@ -17,7 +18,8 @@
       { "content": "quân Thanh", "isCorrect": true },
       { "content": "đất nước", "isCorrect": true }
     ],
-    "idCreator": "679490050e9a9e0d0a9d73af"
+    "idCreator": "679625a4afd6e8aedc8fc64a",
+    "idQuiz": "67962730eb961fb66ba8b52d"
   },
   {
     "content": "Cách mạng Tháng Tám năm ___ đã lật đổ chính quyền phong kiến, đồng thời khai sinh ra nước ___ .",
@@ -27,7 +29,8 @@
       { "content": "1945", "isCorrect": true },
       { "content": "Việt Nam Dân chủ Cộng hòa", "isCorrect": true }
     ],
-    "idCreator": "679490050e9a9e0d0a9d73af"
+    "idCreator": "679625a4afd6e8aedc8fc64a",
+        "idQuiz": "67962730eb961fb66ba8b52d"
   },
   {
     "content": "Triều Nguyễn suy yếu do sự xuất hiện của các cuộc xâm lược từ thực dân ___, chính sách ___ và thiếu sự đổi mới.",
@@ -37,7 +40,8 @@
       { "content": "Pháp", "isCorrect": true },
       { "content": "bảo thủ", "isCorrect": true }
     ],
-    "idCreator": "679490050e9a9e0d0a9d73af"
+    "idCreator": "679625a4afd6e8aedc8fc64a",
+        "idQuiz": "67962730eb961fb66ba8b52d"
   },
   {
     "content": "Chính sách Đổi Mới từ năm ___ đã đưa nền kinh tế Việt Nam từ cơ chế ___ sang nền kinh tế thị trường định hướng xã hội chủ nghĩa.",
@@ -47,7 +51,8 @@
       { "content": "1986", "isCorrect": true },
       { "content": "kế hoạch hóa tập trung", "isCorrect": true }
     ],
-    "idCreator": "679490050e9a9e0d0a9d73af"
+    "idCreator": "679625a4afd6e8aedc8fc64a",
+        "idQuiz": "67962730eb961fb66ba8b52d"
   },
   {
     "content": "Các Vua Hùng được coi là những người sáng lập ___ ở Việt Nam, với kinh đô đặt tại ___.",
@@ -57,7 +62,8 @@
       { "content": "nước Văn Lang", "isCorrect": true },
       { "content": "Phú Thọ", "isCorrect": true }
     ],
-    "idCreator": "679490050e9a9e0d0a9d73af"
+    "idCreator": "679625a4afd6e8aedc8fc64a",
+        "idQuiz": "67962730eb961fb66ba8b52d"
   },
   {
     "content": "Đường mòn Hồ Chí Minh là tuyến đường tiếp tế quan trọng trong ___ nối liền ___ và ___ qua mạng lưới đường mòn.",
@@ -68,7 +74,8 @@
       { "content": "miền Bắc", "isCorrect": true },
       { "content": "miền Nam", "isCorrect": true }
     ],
-    "idCreator": "679490050e9a9e0d0a9d73af"
+    "idCreator": "679625a4afd6e8aedc8fc64a",
+        "idQuiz": "67962730eb961fb66ba8b52d"
   },
   {
     "content": "Hiệp ước ___ năm 1883 đánh dấu việc thiết lập chế độ thuộc địa của Pháp tại ___ Việt Nam.",
@@ -78,7 +85,8 @@
       { "content": "Huế", "isCorrect": true },
       { "content": "Trung Bộ", "isCorrect": true }
     ],
-    "idCreator": "679490050e9a9e0d0a9d73af"
+    "idCreator": "679625a4afd6e8aedc8fc64a",
+        "idQuiz": "67962730eb961fb66ba8b52d"
   },
   {
     "content": "Bài thơ nổi tiếng \"Nam Quốc Sơn Hà\" được coi là bản ___ đầu tiên trong lịch sử Việt Nam.",
@@ -87,7 +95,8 @@
     "answers": [
       { "content": "tuyên ngôn độc lập", "isCorrect": true }
     ],
-    "idCreator": "679490050e9a9e0d0a9d73af"
+    "idCreator": "679625a4afd6e8aedc8fc64a",
+        "idQuiz": "67962730eb961fb66ba8b52d"
   },
   {
     "content": "Trong trận Bạch Đằng năm ___, tướng Trần Hưng Đạo đã sử dụng ___ để đánh bại đội quân ___ .",
@@ -98,6 +107,7 @@
       { "content": "cọc gỗ", "isCorrect": true },
       { "content": "Mông Cổ", "isCorrect": true }
     ],
-    "idCreator": "679490050e9a9e0d0a9d73af"
+    "idCreator": "679625a4afd6e8aedc8fc64a",
+        "idQuiz": "67962730eb961fb66ba8b52d"
   }
 ]
