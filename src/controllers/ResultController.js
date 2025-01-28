@@ -1,9 +1,14 @@
 const ResultService = require('../services/ResultService')
 
 const createResult =  async (req, res) => {
-
     try {
-        const response = await ResultService.createResult(req.body)
+        const token = req.headers.authorization.split(' ')[1]
+        if (token === null) {
+            return res.status(404).json({
+                message: 'The token is not defined'
+            })
+        }
+        const response = await ResultService.createResult(req.body, token)
         return res.status(200).json(response)
     }
     catch (e) {
