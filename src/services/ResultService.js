@@ -2,7 +2,6 @@ const Result = require('../models/Result');
 const Question = require('../models/Question');
 const {verifyToken} = require('../middleware/authMiddleware');
 
-// Hàm tính điểm dựa trên câu trả lời của người dùng và đáp án đúng của câu hỏi
 const calculateScore = async (questions, userAnswers) => {
     let score = 0;
     for (let i = 0; i < questions.length; i++) {
@@ -29,21 +28,17 @@ const checkIsCorrect = (correctAnswers, userAnswer) => {
     return true;
 };
 
-// Tạo kết quả mới
 const createResult = async (newResult, token) => {
     return new Promise(async (resolve, reject) => {
         try {
             const { questions, userAnswers } = newResult;
 
-            // Nếu status là 'done', tính điểm
             if (newResult.status && newResult.status === 'done') {
                 newResult.score = await calculateScore(questions, userAnswers);
             }
 
             const decoded = verifyToken(token);
             
-
-            // Tạo kết quả mới
             const createdResult = await Result.create({idParticipant: decoded.id,...newResult});
             resolve({
                 status: 'OK',
@@ -56,7 +51,6 @@ const createResult = async (newResult, token) => {
     });
 };
 
-// Lấy kết quả theo ID hoặc tất cả kết quả
 const getResult = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -88,7 +82,6 @@ const getResult = (id) => {
     });
 };
 
-// Cập nhật kết quả
 const updateResult = async (ResultId, data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -103,7 +96,6 @@ const updateResult = async (ResultId, data) => {
 
             const { questions, userAnswers } = data;
 
-            // Nếu status là 'done', tính điểm
             if (data.status && data.status === 'done') {
                 data.score = await calculateScore(questions, userAnswers);
             }
