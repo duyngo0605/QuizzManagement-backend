@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const ResultSchema = new mongoose.Schema({
-    idParticipant: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    idParticipant: { type: mongoose.Schema.Types.ObjectId, ref: 'User' , required: true},
     questions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Question' }],
     userAnswers: [[{}]],
     score: { type: Number, default: 0 },

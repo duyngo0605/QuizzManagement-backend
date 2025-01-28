@@ -9,7 +9,6 @@ const calculateScore = async (questions, userAnswers) => {
         if (question) {
             const correctAnswers = question.answers.filter(answer => answer.isCorrect);
             const userAnswer = userAnswers[i];
-            console.log(correctAnswers, userAnswer);
             const isCorrect = checkIsCorrect(correctAnswers, userAnswer);
             if (isCorrect) {
                 score += question.score;
@@ -37,9 +36,12 @@ const createResult = async (newResult, token) => {
                 newResult.score = await calculateScore(questions, userAnswers);
             }
 
-            const decoded = verifyToken(token);
+            const decoded = await verifyToken(token);
             
-            const createdResult = await Result.create({idParticipant: decoded.id,...newResult});
+            const createdResult = await Result.create({
+                ...newResult,
+                idParticipant: decoded.id
+            });
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
