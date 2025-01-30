@@ -1,8 +1,11 @@
 const Result = require('../models/Result');
 const Question = require('../models/Question');
+const Quiz = require('../models/Quiz');
 const {verifyToken} = require('../middleware/authMiddleware');
 
-const calculateScore = async (questions, userAnswers) => {
+const calculateScore = async (idQuiz, userAnswers) => {
+    const quiz = await Quiz.findById(idQuiz);
+    const questions = quiz.questions;
     let score = 0;
     for (let i = 0; i < questions.length; i++) {
         const question = await Question.findById(questions[i]);
@@ -10,6 +13,7 @@ const calculateScore = async (questions, userAnswers) => {
             const correctAnswers = question.answers.filter(answer => answer.isCorrect);
             const userAnswer = userAnswers[i];
             const isCorrect = checkIsCorrect(correctAnswers, userAnswer);
+            console.log(isCorrect);
             if (isCorrect) {
                 score += question.score;
             }
@@ -30,10 +34,10 @@ const checkIsCorrect = (correctAnswers, userAnswer) => {
 const createResult = async (newResult, token) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const { questions, userAnswers } = newResult;
+            const { idQuiz, userAnswers } = newResult;
 
             if (newResult.status && newResult.status === 'done') {
-                newResult.score = await calculateScore(questions, userAnswers);
+                newResult.score = await calculateScore(idQuiz, userAnswers);
             }
 
             const decoded = await verifyToken(token);
@@ -96,10 +100,10 @@ const updateResult = async (ResultId, data) => {
                 return;
             }
 
-            const { questions, userAnswers } = data;
+            const { idQuiz, userAnswers } = data;
 
             if (data.status && data.status === 'done') {
-                data.score = await calculateScore(questions, userAnswers);
+                data.score = await calculateScore(idQuiz, userAnswers);
             }
             
             const updatedResult = await Result.findByIdAndUpdate(ResultId, data, { new: true });
