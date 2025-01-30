@@ -3,7 +3,8 @@ const RequestJoinService = require('../services/RequestJoinService')
 const createRequestJoin =  async (req, res) => {
 
     try {
-        const response = await RequestJoinService.createRequestJoin(req.body)
+        const token = req.headers.authorization?.split(' ')[1];
+        const response = await RequestJoinService.createRequestJoin(req.body,token)
         return res.status(200).json(response)
     }
     catch (e) {
