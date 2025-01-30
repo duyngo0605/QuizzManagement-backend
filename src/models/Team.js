@@ -6,7 +6,7 @@ const TeamSchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true },
     image: { type: String, required: true},
     maxParticipant: { type: Number, required: true },
-    code: { type: String, required: true },
+    code: { type: String, required: true, unique: true },
     members: [{
         member: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
         role: {

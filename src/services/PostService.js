@@ -1,9 +1,28 @@
 const Post = require('../models/Post')
+const Team = require('../models/Team')
+const {verifyToken} = require('../middleware/authMiddleware')
 
-const createPost = async (newPost) => {
+const createPost = async (newPost, token) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const createdPost = await Post.create(newPost)
+            const decoded = await verifyToken(token)
+            const creator = decoded?.id
+            const checkTeam = await Team.findOne({
+                _id: newPost.team
+            })
+            if (!checkTeam) {
+                reject({
+                    status: 'ERR',
+                    message: 'The Team is not defined'
+                })
+            }
+            if (checkTeam.members.indexOf(creator) === -1 && checkTeam.idHost != creator) {
+                reject({
+                    status: 'ERR',
+                    message: 'The User is not a member of the Team'
+                })
+            }
+            const createdPost = await Post.create({...newPost, creator})
             if (createdPost)
             { 
             resolve({

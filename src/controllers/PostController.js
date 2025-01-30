@@ -1,9 +1,9 @@
 const PostService = require('../services/PostService')
 
 const createPost =  async (req, res) => {
-
     try {
-        const response = await PostService.createPost(req.body)
+        const token = req.headers.authorization.split(' ')[1]
+        const response = await PostService.createPost(req.body, token)
         return res.status(200).json(response)
     }
     catch (e) {
