@@ -85,28 +85,44 @@ const updateRequestJoin = async (RequestJoinId, data) => {
     })
 }
 
-const deleteRequestJoin = (id) => {
+const deleteRequestJoin = (id, token) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const checkRequestJoin = await RequestJoin.findOne({
-                _id: id
-            })
-            if (checkRequestJoin === null) {
-                reject({
+        
+
+            const decoded = await verifyToken(token);
+            const idUser = decoded.id;
+
+            const checkRequestJoin = await RequestJoin.findOne({ _id: id });
+
+            if (!checkRequestJoin) {
+                return reject({
                     status: 'ERR',
-                    message: 'The RequestJoin is not defined'
-                })
+                    message: 'RequestJoin not found'
+                });
             }
-            await RequestJoin.findByIdAndDelete(id)
+
+            if (checkRequestJoin.idUser.toString() !== idUser) {
+                return reject({
+                    status: 'ERR',
+                    message: 'You do not have permission to delete this request'
+                });
+            }
+
+            await RequestJoin.findByIdAndDelete(id);
             resolve({
                 status: 'OK',
-                message: 'Delete RequestJoin success',
-            })
+                message: 'Delete RequestJoin success'
+            });
         } catch (e) {
-            reject(e)
+            reject({
+                status: 'ERR',
+                message: e.message || 'Something went wrong'
+            });
         }
-    })
-}
+    });
+};
+
 
 module.exports = {
     createRequestJoin,

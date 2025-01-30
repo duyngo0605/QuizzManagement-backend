@@ -81,26 +81,32 @@ const updateRequestJoin =  async (req, res) => {
     }
 }
 
-const deleteRequestJoin = async (req,res) => {
-    try {
-        const RequestJoinId = req.params.id
-        if (!RequestJoinId)
-        {
-            return res.status(200).json({
-                status: 'ERR',
-                message: 'The RequestJoin is not defined'
-            })
-        }
-        const response = await RequestJoinService.deleteRequestJoin(RequestJoinId)
-        return res.status(200).json(response)
-    }
+const mongoose = require('mongoose');
 
-    catch (e) {
-        return res.status(404).json({
-            message: e
-        })
+const deleteRequestJoin = async (req, res) => {
+    try {
+        const RequestJoinId = req.params.id;
+        const token = req.headers.authorization?.split(' ')[1];
+
+    
+
+        if (!token) {
+            return res.status(401).json({
+                status: 'ERR',
+                message: 'Unauthorized: Missing token'
+            });
+        }
+
+        const response = await RequestJoinService.deleteRequestJoin(RequestJoinId, token);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERR',
+            message: e.message || 'Internal Server Error'
+        });
     }
-}
+};
+
 
 module.exports = {
     createRequestJoin,
