@@ -31,14 +31,12 @@ const getTeam = (id, token) => {
                 idUser = decoded.id;
             }
             if (!id) {
-                if (!token) {
-                    const allTeam = await Team.find();
+                const allTeam = await Team.find();
                     resolve({
                         status: 'OK',
                         message: 'Success',
                         data: allTeam
                     });
-                }
             } else {
                 const team = await Team.findOne({ _id: id }).populate('members.member');
                 if (!team) {
