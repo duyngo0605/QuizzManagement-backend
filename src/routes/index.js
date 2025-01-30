@@ -14,7 +14,7 @@ const routes = (app) => {
     app.use("/api/question", QuestionRouter);
     app.use("/api/quiz", QuizRouter);
     app.use("/api/team", TeamRouter);
-    app.use("/api/requestjoin", RequestJoinRouter);
+    app.use("/api/request-join", RequestJoinRouter);
     app.use("/api/result", ResultRouter);
     app.use("/api/post", PostRouter);
     app.use("/api/comment", CommentRouter);

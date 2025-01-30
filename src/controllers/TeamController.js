@@ -55,8 +55,9 @@ const createManyTeams = async (req, res) => {
 
 const getTeam = async (req, res) => {
     try {
+        const token = req.headers.authorization?.split(' ')[1];
         const TeamId = req.params.id
-        const response = await TeamService.getTeam(TeamId)
+        const response = await TeamService.getTeam(TeamId, token)
         return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({

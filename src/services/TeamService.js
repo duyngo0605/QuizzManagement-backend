@@ -1,4 +1,6 @@
 const Team = require('../models/Team')
+const RequestJoin = require('../models/RequestJoin')
+const {verifyToken} = require('../middleware/authMiddleware')
 
 const createTeam = async (newTeam) => {
     return new Promise(async (resolve, reject) => {
@@ -20,39 +22,65 @@ const createTeam = async (newTeam) => {
     })
 }
 
-
-const getTeam = (id) => {
+const getTeam = (id, token) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!id) {
-                const allTeam = await Team.find()
-                resolve({
-                    status: 'OK',
-                    message: 'Success',
-                    data: allTeam
-                })
+            let idUser = null;
+            if (token) {
+                const decoded = await verifyToken(token);
+                idUser = decoded.id;
             }
-            else {
-                const team = await Team.findOne({
-                    _id: id
-                })
-                if (team === null) {
-                    reject({
+            if (!id) {
+                if (!token) {
+                    const allTeam = await Team.find();
+                    resolve({
+                        status: 'OK',
+                        message: 'Success',
+                        data: allTeam
+                    });
+                }
+            } else {
+                const team = await Team.findOne({ _id: id }).populate('members.member');
+                if (!team) {
+                    return reject({
                         status: 'ERR',
                         message: 'The Team is not defined'
-                    })
+                    });
                 }
+
+                let teamStatus = 'not-joined';
+
+                if (idUser) {
+                    if (team.idHost.toString() === idUser || team.members.some(m => m.member._id.toString() === idUser)) {
+                        teamStatus = 'joined';
+                    } else {
+                        const pendingRequest = await RequestJoin.findOne({
+                            idTeam: id,
+                            idUser: idUser,
+                            status: 'pending'
+                        });
+
+                        if (pendingRequest) {
+                            teamStatus = 'pending';
+                        }
+                    }
+                }
+
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
-                    data: team
-                })
+                    data: team,
+                    joinStatus: teamStatus
+                });
             }
         } catch (e) {
-            reject(e)
+            reject(e);
         }
-    })
-}
+    });
+};
+
+module.exports = getTeam;
+
 
 const updateTeam = async (TeamId, data) => {
     return new Promise(async (resolve, reject) => {

@@ -13,7 +13,6 @@ const calculateScore = async (idQuiz, userAnswers) => {
             const correctAnswers = question.answers.filter(answer => answer.isCorrect);
             const userAnswer = userAnswers[i];
             const isCorrect = checkIsCorrect(correctAnswers, userAnswer);
-            console.log(isCorrect);
             if (isCorrect) {
                 score += question.score;
             }

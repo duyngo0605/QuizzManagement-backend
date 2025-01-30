@@ -45,7 +45,7 @@ const authUserMiddleWare = (req, res, next) => {
     });
 }
 
-const verifyToken = (token) => {
+const verifyToken = async (token) => {
     return new Promise((resolve, reject) => {
         jwt.verify(token, process.env.ACCESS_TOKEN, (err, decoded) => {
             if (err) {
