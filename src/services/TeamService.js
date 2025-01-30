@@ -1,18 +1,17 @@
 const Team = require('../models/Team')
 const RequestJoin = require('../models/RequestJoin')
-const {verifyToken} = require('../middleware/authMiddleware')
+const { verifyToken } = require('../middleware/authMiddleware')
 
 const createTeam = async (newTeam) => {
     return new Promise(async (resolve, reject) => {
         try {
             const createdTeam = await Team.create(newTeam)
-            if (createdTeam)
-            { 
-            resolve({
-                status: 'OK',
-                message: 'SUCCESS',
-                data: createdTeam
-            })
+            if (createdTeam) {
+                resolve({
+                    status: 'OK',
+                    message: 'SUCCESS',
+                    data: createdTeam
+                })
             }
         }
 
@@ -31,13 +30,40 @@ const getTeam = (id, token) => {
                 idUser = decoded.id;
             }
             if (!id) {
-                const allTeam = await Team.find();
-                    resolve({
-                        status: 'OK',
-                        message: 'Success',
-                        data: allTeam
-                    });
-            } else {
+                let allTeam = await Team.find();
+
+                if (idUser) {
+                    allTeam = await Promise.all(allTeam.map(async team => {
+                        let teamStatus = 'not-joined';
+                    
+                        if (team.idHost.toString() === idUser || team.members.some(m => m.member.toString() === idUser)) {
+                            teamStatus = 'joined';
+                        } else {
+                            const pendingRequest = await RequestJoin.findOne({ // ✅ Thêm await
+                                idTeam: team._id,
+                                idUser: idUser,
+                                status: 'pending'
+                            });
+                    
+                            if (pendingRequest) {
+                                teamStatus = 'pending';
+                            }
+                        }
+                    
+                        let teamObject = team.toObject();
+                        teamObject.joinStatus = teamStatus;
+                        return teamObject;
+                    }));
+                    
+                }
+
+                resolve({
+                    status: 'OK',
+                    message: 'Success',
+                    data: allTeam
+                });
+            }
+            else {
                 const team = await Team.findOne({ _id: id }).populate('members.member');
                 if (!team) {
                     return reject({
@@ -87,14 +113,14 @@ const updateTeam = async (TeamId, data) => {
             const checkTeam = await Team.findOne({
                 _id: TeamId
             })
-            if (!checkTeam){
+            if (!checkTeam) {
                 reject({
                     status: 'ERR',
                     message: 'The Team is not defined.'
                 })
             }
 
-            const updatedTeam = await Team.findByIdAndUpdate(TeamId, data, {new: true})
+            const updatedTeam = await Team.findByIdAndUpdate(TeamId, data, { new: true })
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
