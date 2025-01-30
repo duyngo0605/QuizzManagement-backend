@@ -1,8 +1,11 @@
 const RequestJoin = require('../models/RequestJoin')
+const {verifyToken} = require('../middleware/authMiddleware')
 
-const createRequestJoin = async (newRequestJoin) => {
+const createRequestJoin = async (newRequestJoin, token) => {
     return new Promise(async (resolve, reject) => {
         try {
+            const decoded = await verifyToken(token)
+            newRequestJoin.idUser = decoded.id
             const createdRequestJoin = await RequestJoin.create(newRequestJoin)
             if (createdRequestJoin)
             { 
