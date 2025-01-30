@@ -31,13 +31,39 @@ const getTeam = (id, token) => {
                 idUser = decoded.id;
             }
             if (!id) {
-                const allTeam = await Team.find();
-                    resolve({
-                        status: 'OK',
-                        message: 'Success',
-                        data: allTeam
+                let allTeam = await Team.find();
+            
+                if (idUser) {
+                    allTeam = allTeam.map(team => {
+                        let teamStatus = 'not-joined';
+            
+                        if (team.idHost.toString() === idUser || team.members.some(m => m.member.toString() === idUser)) {
+                            teamStatus = 'joined';
+                        } else {
+                            const pendingRequest = RequestJoin.findOne({
+                                idTeam: team._id,
+                                idUser: idUser,
+                                status: 'pending'
+                            });
+            
+                            if (pendingRequest) {
+                                teamStatus = 'pending';
+                            }
+                        }
+            
+                        let teamObject = team.toObject();
+                        teamObject.joinStatus = teamStatus;
+                        return teamObject;
                     });
-            } else {
+                }
+            
+                resolve({
+                    status: 'OK',
+                    message: 'Success',
+                    data: allTeam
+                });
+            }
+             else {
                 const team = await Team.findOne({ _id: id }).populate('members.member');
                 if (!team) {
                     return reject({
