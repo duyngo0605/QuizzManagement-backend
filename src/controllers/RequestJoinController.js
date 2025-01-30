@@ -81,14 +81,13 @@ const updateRequestJoin =  async (req, res) => {
     }
 }
 
-const mongoose = require('mongoose');
+
 
 const deleteRequestJoin = async (req, res) => {
     try {
-        const RequestJoinId = req.params.id;
+        const { id } = req.params; 
+        const { idTeam } = req.body;
         const token = req.headers.authorization?.split(' ')[1];
-
-    
 
         if (!token) {
             return res.status(401).json({
@@ -97,7 +96,7 @@ const deleteRequestJoin = async (req, res) => {
             });
         }
 
-        const response = await RequestJoinService.deleteRequestJoin(RequestJoinId, token);
+        const response = await RequestJoinService.deleteRequestJoin(id, idTeam, token);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(500).json({

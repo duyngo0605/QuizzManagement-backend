@@ -85,15 +85,27 @@ const updateRequestJoin = async (RequestJoinId, data) => {
     })
 }
 
-const deleteRequestJoin = (id, token) => {
+const deleteRequestJoin = (id, idTeam, token) => {
     return new Promise(async (resolve, reject) => {
         try {
-        
-
             const decoded = await verifyToken(token);
             const idUser = decoded.id;
+            if (!id && !idTeam) {
+                return reject({
+                    status: 'ERR',
+                    message: 'Missing parameters: Provide either id or idTeam'
+                });
+            }
 
-            const checkRequestJoin = await RequestJoin.findOne({ _id: id });
+            let deleteQuery = {};
+
+            if (id) {
+                deleteQuery = { _id: id };
+            } else {
+                deleteQuery = { idTeam: idTeam, idUser: idUser };
+            }
+
+            const checkRequestJoin = await RequestJoin.findOne(deleteQuery);
 
             if (!checkRequestJoin) {
                 return reject({
@@ -102,14 +114,8 @@ const deleteRequestJoin = (id, token) => {
                 });
             }
 
-            if (checkRequestJoin.idUser.toString() !== idUser) {
-                return reject({
-                    status: 'ERR',
-                    message: 'You do not have permission to delete this request'
-                });
-            }
+            await RequestJoin.deleteMany(deleteQuery);
 
-            await RequestJoin.findByIdAndDelete(id);
             resolve({
                 status: 'OK',
                 message: 'Delete RequestJoin success'
@@ -122,6 +128,7 @@ const deleteRequestJoin = (id, token) => {
         }
     });
 };
+
 
 
 module.exports = {
