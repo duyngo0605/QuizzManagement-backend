@@ -49,7 +49,7 @@ const getRequestJoin = async (req, res) => {
     try {
         const RequestJoinId = req.params.id;
         const token = req.headers.authorization?.split(' ')[1];
-        const idTeam = req.body.idTeam;
+        const idTeam = req.query.idTeam;
         const status = req.query.status; 
 
         const response = await RequestJoinService.getRequestJoin(RequestJoinId, token, idTeam, status);
