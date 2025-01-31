@@ -47,8 +47,10 @@ const createManyUsers = async (req, res) => {
 
 const getUser = async (req, res) => {
     try {
-        const userId = req.params.id
-        const response = await UserService.getUser(userId)
+        const id = req.params.id
+        const token = req.headers.authorization.split(' ')[1];
+    
+        const response = await UserService.getUser(id,token)
         return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({

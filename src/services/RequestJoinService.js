@@ -80,7 +80,6 @@ const getRequestJoin = (id, token, idTeam, status) => {
 
 const updateRequestJoin = async (RequestJoinId, data) => {
     return new Promise(async (resolve, reject) => {
-
         try {
             const checkRequestJoin = await RequestJoin.findOne({
                 _id: RequestJoinId

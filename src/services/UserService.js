@@ -1,5 +1,7 @@
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
+const Friendship = require('../models/FriendShip')
+const {verifyToken} = require('../middleware/authMiddleware')
 const { generateAccessToken, generateRefreshToken, decodeAccessToken } = require('./JwtService')
 
 const createUser = async (newUser) => {
@@ -105,38 +107,61 @@ const loginUser = async (loginModel) => {
     })
 }
 
-const getUser = (id) => {
+const getUser = (id, token) => {
     return new Promise(async (resolve, reject) => {
+    
         try {
+            const decoded = await verifyToken(token);
+            const idUser = decoded.id;
+            
             if (!id) {
-                const allUser = await User.find()
+                const allUser = await User.find();
                 resolve({
                     status: 'OK',
                     message: 'Success',
                     data: allUser
-                })
-            }
-            else {
-                const user = await User.findOne({
-                    _id: id
-                })
-                if (user === null) {
-                    reject({
+                });
+            } else {
+                const user = await User.findOne({ _id: id });
+                
+                if (!user) {
+                    return reject({
                         status: 'ERR',
                         message: 'The user is not defined'
-                    })
+                    });
                 }
+                const friendship = await Friendship.findOne({
+                    $or: [
+                        { requester: idUser, recipient: id },
+                        { requester: id, recipient: idUser }
+                    ]
+                });
+
+                let friendshipStatus = "none";
+                if (friendship) {
+                    if (friendship.status === "accepted") {
+                        friendshipStatus = "friends";
+                    } else if (friendship.status === "pending" && friendship.requester.toString() === idUser) {
+                        friendshipStatus = "request_sent";
+                    } else if (friendship.status === "pending" && friendship.recipient.toString() === idUser) {
+                        friendshipStatus = "request_received";
+                    } else if (friendship.status === "blocked") {
+                        friendshipStatus = "blocked";
+                    }
+                }
+
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
-                    data: user
-                })
+                    data: { ...user._doc, friendshipStatus }
+                });
             }
         } catch (e) {
-            reject(e)
+            reject(e);
         }
-    })
-}
+    });
+};
+
 
 const updateUser = async (userId, data) => {
     return new Promise(async (resolve, reject) => {
