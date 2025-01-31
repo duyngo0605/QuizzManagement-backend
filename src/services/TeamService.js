@@ -36,9 +36,12 @@ const getTeam = (id, token) => {
                     allTeam = await Promise.all(allTeam.map(async team => {
                         let teamStatus = 'not-joined';
                     
-                        if (team.idHost.toString() === idUser || team.members.some(m => m.member.toString() === idUser)) {
+                        if ( team.members.some(m => m.member.toString() === idUser)) {
                             teamStatus = 'joined';
-                        } else {
+                        } else if(team.idHost.toString() === idUser) {
+                            teamStatus = 'host';
+                        }
+                        else {
                             const pendingRequest = await RequestJoin.findOne({ // ✅ Thêm await
                                 idTeam: team._id,
                                 idUser: idUser,
@@ -75,9 +78,12 @@ const getTeam = (id, token) => {
                 let teamStatus = 'not-joined';
 
                 if (idUser) {
-                    if (team.idHost.toString() === idUser || team.members.some(m => m.member._id.toString() === idUser)) {
+                    if (team.members.some(m => m.member._id.toString() === idUser)) {
                         teamStatus = 'joined';
-                    } else {
+                    } else if(team.idHost.toString() === idUser) {
+                        teamStatus = 'host';
+                    }
+                     else {
                         const pendingRequest = await RequestJoin.findOne({
                             idTeam: id,
                             idUser: idUser,

@@ -47,15 +47,19 @@ const createManyRequestJoins = async (req, res) => {
 
 const getRequestJoin = async (req, res) => {
     try {
-        const RequestJoinId = req.params.id
-        const response = await RequestJoinService.getRequestJoin(RequestJoinId)
-        return res.status(200).json(response)
+        const RequestJoinId = req.params.id;
+        const token = req.headers.authorization?.split(' ')[1];
+        const idTeam = req.query.idTeam;
+        const status = req.query.status; 
+
+        const response = await RequestJoinService.getRequestJoin(RequestJoinId, token, idTeam, status);
+        return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({
-            message: e
-        })
+            message: e.message
+        });
     }
-}
+};
 
 
 const updateRequestJoin =  async (req, res) => {    

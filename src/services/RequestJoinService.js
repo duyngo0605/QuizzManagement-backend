@@ -24,38 +24,59 @@ const createRequestJoin = async (newRequestJoin, token) => {
 }
 
 
-const getRequestJoin = (id) => {
+const getRequestJoin = (id, token, idTeam, status) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!id) {
-                const allRequestJoin = await RequestJoin.find()
-                resolve({
-                    status: 'OK',
-                    message: 'Success',
-                    data: allRequestJoin
-                })
+            let idUser = null;
+            if (token) {
+            const decoded = await verifyToken(token);
+            idUser = decoded.id;
             }
-            else {
-                const requestJoin = await RequestJoin.findOne({
-                    _id: id
-                })
-                if (requestJoin === null) {
-                    reject({
+            let filter = {};
+
+            if (id) {
+                
+                const requestJoin = await RequestJoin.findOne({ _id: id });
+                if (!requestJoin) {
+                    return reject({
                         status: 'ERR',
                         message: 'The RequestJoin is not defined'
-                    })
+                    });
                 }
-                resolve({
+                return resolve({
                     status: 'OK',
                     message: 'SUCCESS',
                     data: requestJoin
-                })
+                });
             }
+
+          
+            if (idTeam) {
+                filter.idTeam = idTeam;
+            } else {
+                
+                filter.idUser = idUser;
+            }
+
+           
+            if (status) {
+                filter.status = status;
+            }
+
+            const allRequestJoin = await RequestJoin.find(filter);
+            return resolve({
+                status: 'OK',
+                message: 'Success',
+                data: allRequestJoin
+            });
         } catch (e) {
-            reject(e)
+            return reject({
+                status: 'ERR',
+                message: e.message
+            });
         }
-    })
-}
+    });
+};
 
 const updateRequestJoin = async (RequestJoinId, data) => {
     return new Promise(async (resolve, reject) => {
