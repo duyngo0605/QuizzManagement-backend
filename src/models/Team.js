@@ -15,7 +15,7 @@ const TeamSchema = new mongoose.Schema({
             default: 'participant'
         }
     }],
-    quizs: [{type: mongoose.Schema.Types.ObjectId, ref: 'Quiz'}]
+    quizzes: [{type: mongoose.Schema.Types.ObjectId, ref: 'Quiz'}]
 }, { timestamps: true });
 
 module.exports = mongoose.model('Team', TeamSchema);

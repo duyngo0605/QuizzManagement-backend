@@ -219,6 +219,67 @@ const leaveTeam = async (teamId, token) => {
     })
 }
 
+const addQuiz = async (teamId, quizIds, token) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const team = await Team.findOne({
+                _id: teamId
+            })
+            if (!team) {
+                reject({
+                    status: 'ERR',
+                    message: 'The Team is not defined.'
+                })
+            }
+            await checkPermissions(token, team.idHost)
+
+            quizIds.forEach(quizId => {
+                console.log(quizId)
+                if (!team.quizzes.includes(quizId))
+                    team.quizzes.push(quizId)
+            })
+            console.log('team.quizzes', team.quizzes)
+            await team.save()
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: team
+            })
+            
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+const removeQuiz = async (teamId, quizIds, token) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const team = await Team.findOne({
+                _id: teamId
+            })
+            if (!team) {
+                reject({
+                    status: 'ERR',
+                    message: 'The Team is not defined.'
+                })
+            }
+            await checkPermissions(token, team.idHost)
+            quizIds.forEach(quizId => {
+                team.quizzes = team.quizzes.filter(q => q.toString() != quizId)
+            })
+            await team.save()
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: team
+            })
+            
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
 
 
 const deleteTeam = (id) => {
@@ -250,5 +311,7 @@ module.exports = {
     updateTeam,
     deleteTeam,
     kickUser,
-    leaveTeam
+    leaveTeam,
+    addQuiz,
+    removeQuiz
 }

@@ -84,6 +84,14 @@ const updateTeam =  async (req, res) => {
             const response = await TeamService.kickUser(TeamId, data.kickUser, token)
             return res.status(200).json(response)
         }
+        if (data.addQuiz) {
+            const response = await TeamService.addQuiz(TeamId, data.addQuiz, token)
+            return res.status(200).json(response)
+        }
+        if (data.removeQuiz) {
+            const response = await TeamService.removeQuiz(TeamId, data.removeQuiz, token)
+            return res.status(200).json(response)
+        }
         const response = await TeamService.updateTeam(TeamId, data, token)
         return res.status(200).json(response)
     }
