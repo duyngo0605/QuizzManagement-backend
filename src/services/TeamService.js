@@ -31,7 +31,7 @@ const getTeam = (id, token) => {
             }
             if (!id) {
 
-                let allTeam = await Team.find();
+                let allTeam = await Team.find().populate('members.member','_id email avatar').populate('idHost','_id email avatar');
             
                 if (idUser) {
         
@@ -39,24 +39,21 @@ const getTeam = (id, token) => {
                     
                         let teamStatus = 'not-joined';
 
-                        if ( team.members.some(m => m.member.toString() === idUser)) {
+                        if (team.members.some(m => m.member && m.member._id.toString() === idUser)) {
                             teamStatus = 'joined';
-                            console.log('debug')
-                        } else if(team.idHost.toString() === idUser) {
+                        } else if (team.idHost && team.idHost._id.toString() === idUser) {
                             teamStatus = 'host';
-                        }
-                        else {
+                        } else {
                             const pendingRequest = await RequestJoin.findOne({ 
                                 idTeam: team._id,
                                 idUser: idUser,
                                 status: 'pending'
                             });
-                    
+                        
                             if (pendingRequest) {
                                 teamStatus = 'pending';
                             }
                         }
-                        
                         let teamObject = team.toObject();
                         teamObject.joinStatus = teamStatus;
                         return teamObject;

@@ -85,14 +85,18 @@ const updateRequestJoin = async (RequestJoinId, data, token) => {
             const checkRequestJoin = await RequestJoin.findOne({
                 _id: RequestJoinId
             })
+           
             if (!checkRequestJoin){
                 reject({
                     status: 'ERR',
                     message: 'The RequestJoin is not defined.'
                 })
             }
-
-            const canUpdate = await checkPermissions(token, checkRequestJoin.idHost)
+            const team = await Team.findOne({
+                _id: checkRequestJoin.idTeam
+            })
+        
+            const canUpdate = await checkPermissions(token, team.idHost)
             if (!canUpdate) {
                 reject({
                     status: 'ERR',
