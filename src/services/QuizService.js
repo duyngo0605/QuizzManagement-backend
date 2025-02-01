@@ -43,7 +43,7 @@ const cloneQuiz = async (quizId, token) => {
             const newQuizData = {
                 ...originalQuiz.toObject(),
                 _id: undefined,
-                title: `${originalQuiz.title} (Clone)`,
+                name: `${originalQuiz.title} (Clone)`,
                 createdAt: new Date(),
                 updatedAt: new Date(),
             };
