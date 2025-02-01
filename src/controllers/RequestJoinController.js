@@ -1,7 +1,6 @@
 const RequestJoinService = require('../services/RequestJoinService')
 
 const createRequestJoin =  async (req, res) => {
-
     try {
         const token = req.headers.authorization?.split(' ')[1];
         const response = await RequestJoinService.createRequestJoin(req.body,token)
@@ -64,6 +63,7 @@ const getRequestJoin = async (req, res) => {
 
 const updateRequestJoin =  async (req, res) => {    
     try {
+        const token = req.headers.authorization?.split(' ')[1]
         const RequestJoinId = req.params.id
         if (!RequestJoinId)
         {
@@ -74,7 +74,7 @@ const updateRequestJoin =  async (req, res) => {
         }
 
         const data = req.body
-        const response = await RequestJoinService.updateRequestJoin(RequestJoinId, data)
+        const response = await RequestJoinService.updateRequestJoin(RequestJoinId, data, token)
         return res.status(200).json(response)
     }
 
