@@ -50,7 +50,7 @@ const getPost = (id, teamId) => {
             const posts = await Post.find(query)
                 .populate('quiz')
                 .populate('creator', 'email avatar') 
-                .select('-comments') 
+                .populate('comments','_id') 
                 .select('-likes') 
                 .lean(); 
 
