@@ -25,6 +25,53 @@ const createQuiz = async (newQuiz) => {
         }
     });
 };
+
+const cloneQuiz = async (quizId, token) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const originalQuiz = await Quiz.findOne({ _id: quizId }).populate('questions');
+            if (!originalQuiz) {
+                reject({
+                    status: 'ERR',
+                    message: 'The Quiz is not defined.'
+                });
+                return;
+            }
+
+            await checkPermissions(token, originalQuiz.idCreator);
+
+            const newQuizData = {
+                ...originalQuiz.toObject(),
+                _id: undefined,
+                title: `${originalQuiz.title} (Clone)`,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            };
+
+            const newQuiz = await Quiz.create(newQuizData);
+
+            if (originalQuiz.questions && originalQuiz.questions.length > 0) {
+                newQuiz.questions = originalQuiz.questions.map(question => question._id);
+                await newQuiz.save();
+            }
+
+            const user = await User.findOne({ _id: originalQuiz.idCreator });
+            if (user) {
+                user.library.quizzes.push(originalQuiz._id);
+                await user.save();
+            }
+
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: newQuiz
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
 const getQuiz = (id, filter) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -267,6 +314,7 @@ const getPractice = async (id) => {
 
 module.exports = {
     createQuiz,
+    cloneQuiz,
     getQuiz,
     updateQuiz,
     deleteQuiz,

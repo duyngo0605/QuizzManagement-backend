@@ -38,9 +38,10 @@ const getTeam = (id, token) => {
                     allTeam = await Promise.all(allTeam.map(async team => {
                     
                         let teamStatus = 'not-joined';
-                
-                        if ( team.members.some(m => m.member._id.toString() === idUser)) {
+
+                        if ( team.members.some(m => m.member.toString() === idUser)) {
                             teamStatus = 'joined';
+                            console.log('debug')
                         } else if(team.idHost.toString() === idUser) {
                             teamStatus = 'host';
                         }
@@ -55,7 +56,6 @@ const getTeam = (id, token) => {
                                 teamStatus = 'pending';
                             }
                         }
-                        console.log(`Team: ${team._id}, Status: ${teamStatus}`);
                         
                         let teamObject = team.toObject();
                         teamObject.joinStatus = teamStatus;

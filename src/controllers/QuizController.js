@@ -48,6 +48,29 @@ const createManyQuizzes = async (req, res) => {
     }
 }
 
+const cloneQuiz = async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        const QuizId = req.params.id
+        if (!QuizId)
+        {
+            return res.status(404).json({
+                status: 'ERR',
+                message: 'The Quiz is required'
+            })
+        }
+
+        const response = await QuizService.cloneQuiz(QuizId, token)
+        return res.status(200).json(response)
+    }
+
+    catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 const getQuiz = async (req, res) => {
     try {
         const filter = req.query;
@@ -183,6 +206,7 @@ const getPractice = async (req, res) => {
 
 module.exports = {
     createQuiz,
+    cloneQuiz,
     updateQuiz,
     deleteQuiz,
     getQuiz,
