@@ -48,7 +48,6 @@ const getPost = (id, teamId) => {
             if (teamId) query.team = teamId;
 
             const posts = await Post.find(query)
-              
                 .populate('quiz')
                 .populate('creator', 'email avatar') 
                 .select('-comments') 
