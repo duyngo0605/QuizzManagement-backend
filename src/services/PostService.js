@@ -40,38 +40,38 @@ const createPost = async (newPost, token) => {
 }
 
 
-const getPost = (id) => {
+const getPost = (id, teamId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!id) {
-                const allPost = await Post.find()
-                resolve({
-                    status: 'OK',
-                    message: 'Success',
-                    data: allPost
-                })
-            }
-            else {
-                const post = await Post.findOne({
-                    _id: id
-                })
-                if (post === null) {
-                    reject({
-                        status: 'ERR',
-                        message: 'The Post is not defined'
-                    })
-                }
-                resolve({
-                    status: 'OK',
-                    message: 'SUCCESS',
-                    data: post
-                })
-            }
+            let query = {};
+            if (id) query._id = id;
+            if (teamId) query.team = teamId;
+
+            const posts = await Post.find(query)
+              
+                .populate('quiz')
+                .populate('creator', 'email avatar') 
+                .select('-comments') 
+                .select('-likes') 
+                .lean(); 
+
+         
+            const postData = posts.map(post => ({
+                ...post,
+                likeCount: post.likes ? post.likes.length : 0, 
+    commentCount: post.comments ? post.comments.length : 0
+            }));
+
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: postData
+            });
         } catch (e) {
-            reject(e)
+            reject(e);
         }
-    })
-}
+    });
+};
 
 const updatePost = async (PostId, data) => {
     return new Promise(async (resolve, reject) => {
