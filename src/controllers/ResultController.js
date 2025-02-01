@@ -61,6 +61,19 @@ const getResult = async (req, res) => {
     }
 }
 
+const getLeadBoard = async (req, res) => {
+    try {
+        const { idQuiz } = req.body
+        console.log('idQuiz', idQuiz)
+        const response = await ResultService.getLeadBoard(idQuiz)
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 
 const updateResult =  async (req, res) => {    
     try {
@@ -111,5 +124,6 @@ module.exports = {
     updateResult,
     deleteResult,
     getResult,
-    createManyResults
+    createManyResults,
+    getLeadBoard
 }

@@ -8,5 +8,6 @@ router.put('/:id', ResultController.updateResult)
 router.delete('/:id', ResultController.deleteResult)
 router.get('/:id?', ResultController.getResult)
 router.post('/many', ResultController.createManyResults)
+router.post('/leadboard', ResultController.getLeadBoard)
 
 module.exports = router

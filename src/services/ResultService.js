@@ -87,6 +87,47 @@ const getResult = (id) => {
     });
 };
 
+const getLeadBoard = (idQuiz) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!idQuiz) {
+                reject({
+                    status: 'ERR',
+                    message: 'idQUiz is required'
+                });
+            } else {
+                const results = await Result.find({ idQuiz: idQuiz })
+                    .sort({ score: -1 })
+                    .populate('idParticipant', 'username')
+                    .populate('idQuiz', 'name');
+
+                const resultsData = results.map(result => {
+                    return {
+                        username: result.idParticipant.username,
+                        score: result.score
+                    };
+                });
+
+                if (!results || results.length === 0) {
+                    reject({
+                        status: 'ERR',
+                        message: 'No results found for the specified quiz'
+                    });
+                    return;
+                }
+
+                resolve({
+                    status: 'OK',
+                    message: 'SUCCESS',
+                    data: resultsData
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
 const updateResult = async (ResultId, data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -145,4 +186,5 @@ module.exports = {
     getResult,
     updateResult,
     deleteResult,
+    getLeadBoard
 };
