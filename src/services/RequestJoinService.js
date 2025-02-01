@@ -111,7 +111,10 @@ const updateRequestJoin = async (RequestJoinId, data, token) => {
                         message: 'The Team is not defined.'
                     })
                 }
-                team.members.push(checkRequestJoin.idUser)
+                team.members.push({
+                    member: checkRequestJoin.idUser,
+                    role: 'participant'
+                })
                 await team.save()
             }
 

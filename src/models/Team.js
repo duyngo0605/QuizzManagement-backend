@@ -10,8 +10,9 @@ const TeamSchema = new mongoose.Schema({
     members: [{
         member: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
         role: {
-            Type: String,
-            enum: ['manager', 'participant']
+            type: String,
+            enum: ['manager', 'participant'],
+            default: 'participant'
         }
     }],
     quizs: [{type: mongoose.Schema.Types.ObjectId, ref: 'Quiz'}]

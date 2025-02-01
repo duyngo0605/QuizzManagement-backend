@@ -1,6 +1,6 @@
 const Team = require('../models/Team')
 const RequestJoin = require('../models/RequestJoin')
-const { verifyToken } = require('../middleware/authMiddleware')
+const { verifyToken, checkPermissions } = require('../middleware/authMiddleware')
 
 const createTeam = async (newTeam) => {
     return new Promise(async (resolve, reject) => {
@@ -113,10 +113,7 @@ const getTeam = (id, token) => {
     });
 };
 
-module.exports = getTeam;
-
-
-const updateTeam = async (TeamId, data) => {
+const updateTeam = async (TeamId, data, token) => {
     return new Promise(async (resolve, reject) => {
 
         try {
@@ -130,6 +127,7 @@ const updateTeam = async (TeamId, data) => {
                 })
             }
 
+            await checkPermissions(token, checkTeam.idHost)
             const updatedTeam = await Team.findByIdAndUpdate(TeamId, data, { new: true })
             resolve({
                 status: 'OK',
@@ -139,6 +137,48 @@ const updateTeam = async (TeamId, data) => {
         }
 
         catch (e) {
+            reject(e)
+        }
+    })
+}
+
+const kickUser = async (teamId, userId, token) => {
+    console.log('kickUser')
+    return new Promise(async (resolve, reject) => {
+        try {
+            const team = await Team.findOne({
+                _id: teamId
+            })
+            if (!team) {
+                reject({
+                    status: 'ERR',
+                    message: 'The Team is not defined.'
+                })
+            }
+            const canUpdate = await checkPermissions(token, team.idHost)
+            if (!canUpdate) {
+                reject({
+                    status: 'ERR',
+                    message: 'You do not have sufficient permissions'
+                })
+            }
+
+            if (team.idHost.toString() === userId) {
+                reject({
+                    status: 'ERR',
+                    message: 'You can not kick yourself.'
+                })
+            }
+            console.log('team.members', team.members)
+            team.members = team.members.filter(m => m.member.toString() != userId)
+            await team.save()
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: team
+            })
+
+        } catch (e) {
             reject(e)
         }
     })
@@ -172,4 +212,5 @@ module.exports = {
     getTeam,
     updateTeam,
     deleteTeam,
+    kickUser,
 }

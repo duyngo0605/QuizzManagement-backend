@@ -69,6 +69,7 @@ const getTeam = async (req, res) => {
 
 const updateTeam =  async (req, res) => {    
     try {
+        const token = req.headers.authorization?.split(' ')[1];
         const TeamId = req.params.id
         if (!TeamId)
         {
@@ -79,7 +80,11 @@ const updateTeam =  async (req, res) => {
         }
 
         const data = req.body
-        const response = await TeamService.updateTeam(TeamId, data)
+        if (data.kickUser) {
+            const response = await TeamService.kickUser(TeamId, data.kickUser, token)
+            return res.status(200).json(response)
+        }
+        const response = await TeamService.updateTeam(TeamId, data, token)
         return res.status(200).json(response)
     }
 
