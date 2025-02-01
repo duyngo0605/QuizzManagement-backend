@@ -8,5 +8,6 @@ router.put('/:id', TeamController.updateTeam)
 router.delete('/:id', TeamController.deleteTeam)
 router.get('/:id?', TeamController.getTeam)
 router.post('/many', TeamController.createManyTeams)
+router.post('/leave/:id', TeamController.leaveTeam)
 
 module.exports = router

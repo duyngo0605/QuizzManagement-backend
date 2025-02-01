@@ -143,7 +143,6 @@ const updateTeam = async (TeamId, data, token) => {
 }
 
 const kickUser = async (teamId, userId, token) => {
-    console.log('kickUser')
     return new Promise(async (resolve, reject) => {
         try {
             const team = await Team.findOne({
@@ -184,6 +183,44 @@ const kickUser = async (teamId, userId, token) => {
     })
 }
 
+const leaveTeam = async (teamId, token) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const team = await Team.findOne({
+                _id: teamId
+            })
+            if (!team) {
+                reject({
+                    status: 'ERR',
+                    message: 'The Team is not defined.'
+                })
+            }
+
+            const decoded = await verifyToken(token)
+            const userId = decoded.id
+            
+            if (team.idHost.toString() === userId) {
+                reject({
+                    status: 'ERR',
+                    message: 'You can not leave the team as a host.'
+                })
+            }
+            team.members = team.members.filter(m => m.member.toString() != userId)
+            await team.save()
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: team
+            })
+
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+
+
 const deleteTeam = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -213,4 +250,5 @@ module.exports = {
     updateTeam,
     deleteTeam,
     kickUser,
+    leaveTeam
 }

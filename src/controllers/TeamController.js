@@ -116,10 +116,33 @@ const deleteTeam = async (req,res) => {
     }
 }
 
+const leaveTeam = async (req,res) => {
+    try {
+        const TeamId = req.params.id
+        const token = req.headers.authorization?.split(' ')[1];
+        if (!TeamId)
+        {
+            return res.status(200).json({
+                status: 'ERR',
+                message: 'The Team is not defined'
+            })
+        }
+        const response = await TeamService.leaveTeam(TeamId, token)
+        return res.status(200).json(response)
+    }
+
+    catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 module.exports = {
     createTeam,
     updateTeam,
     deleteTeam,
     getTeam,
-    createManyTeams
+    createManyTeams,
+    leaveTeam
 }
