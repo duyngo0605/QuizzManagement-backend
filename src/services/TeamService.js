@@ -30,19 +30,22 @@ const getTeam = (id, token) => {
                 idUser = decoded.id;
             }
             if (!id) {
-                let allTeam = await Team.find();
 
+                let allTeam = await Team.find();
+            
                 if (idUser) {
+        
                     allTeam = await Promise.all(allTeam.map(async team => {
-                        let teamStatus = 'not-joined';
                     
-                        if ( team.members.some(m => m.member.toString() === idUser)) {
+                        let teamStatus = 'not-joined';
+                
+                        if ( team.members.some(m => m.member._id.toString() === idUser)) {
                             teamStatus = 'joined';
                         } else if(team.idHost.toString() === idUser) {
                             teamStatus = 'host';
                         }
                         else {
-                            const pendingRequest = await RequestJoin.findOne({ // ✅ Thêm await
+                            const pendingRequest = await RequestJoin.findOne({ 
                                 idTeam: team._id,
                                 idUser: idUser,
                                 status: 'pending'
@@ -52,7 +55,8 @@ const getTeam = (id, token) => {
                                 teamStatus = 'pending';
                             }
                         }
-                    
+                        console.log(`Team: ${team._id}, Status: ${teamStatus}`);
+                        
                         let teamObject = team.toObject();
                         teamObject.joinStatus = teamStatus;
                         return teamObject;

@@ -1,5 +1,6 @@
 const Comment = require('../models/Comment')
-const { verifyToken } = require('../middleware/authMiddleware')
+const { verifyToken } = require('../middleware/authMiddleware');
+const Post = require('../models/Post');
 const createComment = async (newComment, token) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -20,7 +21,7 @@ const createComment = async (newComment, token) => {
                 });
             }
 
-            // Kiểm tra nếu có parent
+          
             if (newComment.parent) {
                 const parentComment = await Comment.findById(newComment.parent);
                 
@@ -31,7 +32,7 @@ const createComment = async (newComment, token) => {
                     });
                 }
 
-                // Nếu comment cha cũng có parent, không cho phép
+            
                 if (parentComment.parent) {
                     return reject({
                         status: 'ERR',
@@ -46,6 +47,9 @@ const createComment = async (newComment, token) => {
                 parent: newComment.parent || null
             });
 
+           Post.findByIdAndUpdate(newComment.post, {
+                $push: { comments: createdComment._id }
+            }).exec(); 
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
