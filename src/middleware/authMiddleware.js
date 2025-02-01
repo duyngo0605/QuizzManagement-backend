@@ -60,6 +60,7 @@ const verifyToken = async (token) => {
 const checkPermissions = async (token, idCreator) => {
     try {
         const decoded = await verifyToken(token);
+        console.log(decoded)
         if (decoded.role === 'admin' || decoded.id == idCreator) {
             return true;
         }

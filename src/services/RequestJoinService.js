@@ -1,5 +1,6 @@
 const RequestJoin = require('../models/RequestJoin')
-const {verifyToken} = require('../middleware/authMiddleware')
+const Team = require('../models/Team')
+const {verifyToken, checkPermissions} = require('../middleware/authMiddleware')
 
 const createRequestJoin = async (newRequestJoin, token) => {
     return new Promise(async (resolve, reject) => {
@@ -78,7 +79,7 @@ const getRequestJoin = (id, token, idTeam, status) => {
     });
 };
 
-const updateRequestJoin = async (RequestJoinId, data) => {
+const updateRequestJoin = async (RequestJoinId, data, token) => {
     return new Promise(async (resolve, reject) => {
         try {
             const checkRequestJoin = await RequestJoin.findOne({
@@ -90,6 +91,30 @@ const updateRequestJoin = async (RequestJoinId, data) => {
                     message: 'The RequestJoin is not defined.'
                 })
             }
+
+            const canUpdate = await checkPermissions(token, checkRequestJoin.idHost)
+            if (!canUpdate) {
+                reject({
+                    status: 'ERR',
+                    message: 'You do not have sufficient permissions'
+                })
+            }
+            
+
+            if (data.status == "approved") {
+                const team = await Team.findOne({
+                    _id: checkRequestJoin.idTeam
+                })
+                if (!team) {
+                    reject({
+                        status: 'ERR',
+                        message: 'The Team is not defined.'
+                    })
+                }
+                team.members.push(checkRequestJoin.idUser)
+                await team.save()
+            }
+
 
             const updatedRequestJoin = await RequestJoin.findByIdAndUpdate(RequestJoinId, data, {new: true})
             resolve({
