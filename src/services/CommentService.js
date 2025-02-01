@@ -1,58 +1,99 @@
 const Comment = require('../models/Comment')
-
-const createComment = async (newComment) => {
+const { verifyToken } = require('../middleware/authMiddleware')
+const createComment = async (newComment, token) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const createdComment = await Comment.create(newComment)
-            if (createdComment)
-            { 
+            if (!token) {
+                return reject({
+                    status: 'ERR',
+                    message: 'Unauthorized'
+                });
+            }
+
+            const decoded = await verifyToken(token);
+            const idUser = decoded.id;
+
+            if (!newComment.post) {
+                return reject({
+                    status: 'ERR',
+                    message: 'Post ID is required'
+                });
+            }
+
+            // Kiểm tra nếu có parent
+            if (newComment.parent) {
+                const parentComment = await Comment.findById(newComment.parent);
+                
+                if (!parentComment) {
+                    return reject({
+                        status: 'ERR',
+                        message: 'Parent comment does not exist'
+                    });
+                }
+
+                // Nếu comment cha cũng có parent, không cho phép
+                if (parentComment.parent) {
+                    return reject({
+                        status: 'ERR',
+                        message: 'Only one level of replies is allowed'
+                    });
+                }
+            }
+
+            const createdComment = await Comment.create({
+                ...newComment,
+                user: idUser,
+                parent: newComment.parent || null
+            });
+
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
                 data: createdComment
-            })
-            }
+            });
+
+        } catch (e) {
+            reject(e);
         }
-
-        catch (e) {
-            reject(e)
-        }
-    })
-}
+    });
+};
 
 
-const getComment = (id) => {
+
+
+
+const getComment = async (idPost) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!id) {
-                const allComment = await Comment.find()
-                resolve({
-                    status: 'OK',
-                    message: 'Success',
-                    data: allComment
-                })
+            if (!idPost) {
+                return reject({
+                    status: 'ERR',
+                    message: 'Post ID is required'
+                });
             }
-            else {
-                const comment = await Comment.findOne({
-                    _id: id
-                })
-                if (comment === null) {
-                    reject({
-                        status: 'ERR',
-                        message: 'The Comment is not defined'
-                    })
-                }
-                resolve({
-                    status: 'OK',
-                    message: 'SUCCESS',
-                    data: comment
-                })
+
+        
+            let comments = await Comment.find({ post: idPost, parent: null })
+                .populate('user', 'email')
+                .select('-parent')
+
+            for (let comment of comments) {
+                comment._doc.replies = await Comment.find({ parent: comment._id })
+                    .populate('user', 'email avatar')
+                    .select('-post -parent'); // Không cần lấy lại post/parent
             }
+
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: comments
+            });
         } catch (e) {
-            reject(e)
+            reject(e);
         }
-    })
-}
+    });
+};
+
 
 const updateComment = async (CommentId, data) => {
     return new Promise(async (resolve, reject) => {

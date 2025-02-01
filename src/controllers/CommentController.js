@@ -3,7 +3,8 @@ const CommentService = require('../services/CommentService')
 const createComment =  async (req, res) => {
 
     try {
-        const response = await CommentService.createComment(req.body)
+        const token = req.headers.authorization?.split(' ')[1];
+        const response = await CommentService.createComment(req.body,token)
         return res.status(200).json(response)
     }
     catch (e) {
@@ -46,15 +47,18 @@ const createManyComments = async (req, res) => {
 
 const getComment = async (req, res) => {
     try {
-        const CommentId = req.params.id
-        const response = await CommentService.getComment(CommentId)
-        return res.status(200).json(response)
+        const idPost = req.query.idPost;
+        console.log(idPost);
+        
+        const response = await CommentService.getComment(idPost);
+        return res.status(200).json(response);
     } catch (e) {
-        return res.status(404).json({
-            message: e
-        })
+        return res.status(400).json({
+            status: 'ERR',
+            message: e.message || 'Something went wrong'
+        });
     }
-}
+};
 
 
 const updateComment =  async (req, res) => {    

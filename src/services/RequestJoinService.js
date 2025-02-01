@@ -63,7 +63,7 @@ const getRequestJoin = (id, token, idTeam, status) => {
                 filter.status = status;
             }
 
-            const allRequestJoin = await RequestJoin.find(filter);
+            const allRequestJoin = await RequestJoin.find(filter).populate('idUser','email avatar').populate('idTeam','name image').lean();
             return resolve({
                 status: 'OK',
                 message: 'Success',

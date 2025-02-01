@@ -46,15 +46,18 @@ const createManyPosts = async (req, res) => {
 
 const getPost = async (req, res) => {
     try {
-        const PostId = req.params.id
-        const response = await PostService.getPost(PostId)
-        return res.status(200).json(response)
+        const { id } = req.params; 
+        const { teamId } = req.query; 
+
+        const response = await PostService.getPost(id, teamId);
+        return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({
-            message: e
-        })
+            message: e.message || 'Error fetching posts'
+        });
     }
-}
+};
+
 
 
 const updatePost =  async (req, res) => {    
