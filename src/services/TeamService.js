@@ -30,35 +30,36 @@ const getTeam = (id, token) => {
                 idUser = decoded.id;
             }
             if (!id) {
+                let allTeam = await Team.find()
+                    .populate('idHost', '_id email avatar'); 
 
-                let allTeam = await Team.find().populate('members.member','_id email avatar').populate('idHost','_id email avatar');
-            
                 if (idUser) {
-        
                     allTeam = await Promise.all(allTeam.map(async team => {
-                    
                         let teamStatus = 'not-joined';
-
-                        if (team.members.some(m => m.member && m.member._id.toString() === idUser)) {
-                            teamStatus = 'joined';
-                        } else if (team.idHost && team.idHost._id.toString() === idUser) {
+                        if (team.idHost && team.idHost._id.toString() === idUser) {
                             teamStatus = 'host';
-                        } else {
-                            const pendingRequest = await RequestJoin.findOne({ 
+                        }else if (team.members.some(m => m.member && m.member._id.toString() === idUser)) {
+                            teamStatus = 'joined';
+                        }  else {
+                            const pendingRequest = await RequestJoin.findOne({
                                 idTeam: team._id,
                                 idUser: idUser,
                                 status: 'pending'
                             });
-                        
+
                             if (pendingRequest) {
                                 teamStatus = 'pending';
                             }
                         }
+
                         let teamObject = team.toObject();
                         teamObject.joinStatus = teamStatus;
+                        teamObject.memberCount = team.members.length;
+                        teamObject.quizCount = team.quizzes ? team.quizzes.length : 0;
+                        delete teamObject.members;
+                        delete teamObject.quizzes;
                         return teamObject;
                     }));
-                    
                 }
 
                 resolve({
@@ -66,23 +67,35 @@ const getTeam = (id, token) => {
                     message: 'Success',
                     data: allTeam
                 });
-            }
-            else {
-                const team = await Team.findOne({ _id: id }).populate('members.member');
+            } else {
+            
+                const team = await Team.findOne({ _id: id })
+                    .populate('members.member', '_id email avatar')
+                    .populate({
+                        path: 'quizzes',
+                        populate: {
+                            path: 'topicId',
+                            select: '_id name' 
+                        }
+                    })
+                    .populate('idHost', '_id email avatar'); 
+                    
                 if (!team) {
                     return reject({
                         status: 'ERR',
                         message: 'The Team is not defined'
                     });
                 }
-
+        
+                
                 let teamStatus = 'not-joined';
-
+                console.log(idUser);
+                console.log(team.idHost);
                 if (idUser) {
-                    if (team.members.some(m => m.member._id.toString() === idUser)) {
-                        teamStatus = 'joined';
-                    } else if(team.idHost.toString() === idUser) {
+                     if (team.idHost._id.toString() === idUser) {
                         teamStatus = 'host';
+                     } else if (team.members.some(m => m.member._id.toString() === idUser)) {
+                        teamStatus = 'joined';
                     }
                      else {
                         const pendingRequest = await RequestJoin.findOne({
@@ -109,6 +122,7 @@ const getTeam = (id, token) => {
         }
     });
 };
+
 
 const updateTeam = async (TeamId, data, token) => {
     return new Promise(async (resolve, reject) => {
@@ -165,7 +179,7 @@ const kickUser = async (teamId, userId, token) => {
                     message: 'You can not kick yourself.'
                 })
             }
-            console.log('team.members', team.members)
+        
             team.members = team.members.filter(m => m.member.toString() != userId)
             await team.save()
             resolve({

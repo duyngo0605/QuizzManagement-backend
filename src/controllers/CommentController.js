@@ -4,6 +4,8 @@ const createComment =  async (req, res) => {
 
     try {
         const token = req.headers.authorization?.split(' ')[1];
+    
+        
         const response = await CommentService.createComment(req.body,token)
         return res.status(200).json(response)
     }
@@ -47,10 +49,16 @@ const createManyComments = async (req, res) => {
 
 const getComment = async (req, res) => {
     try {
-        const idPost = req.query.idPost;
-        console.log(idPost);
-        
-        const response = await CommentService.getComment(idPost);
+        const { idPost, idQuiz } = req.query; 
+
+        if (!idPost && !idQuiz) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'Post ID or Quiz ID is required'
+            });
+        }
+
+        const response = await CommentService.getComment(idPost, idQuiz);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(400).json({

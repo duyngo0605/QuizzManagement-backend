@@ -87,46 +87,99 @@ const getResult = (id) => {
     });
 };
 
-const getLeadBoard = (idQuiz) => {
+const getLeadBoard = (idQuiz, token) => {
     return new Promise(async (resolve, reject) => {
         try {
+            let userId = null;
+            if (token) {
+                try {
+                    const decoded = await verifyToken(token);
+                    userId = decoded.id;
+                } catch (error) {
+                    console.warn("Invalid token, proceeding without user data");
+                }
+            }
+
             if (!idQuiz) {
                 reject({
                     status: 'ERR',
-                    message: 'idQUiz is required'
+                    message: 'idQuiz is required'
                 });
-            } else {
-                const results = await Result.find({ idQuiz: idQuiz })
-                    .sort({ score: -1 })
-                    .populate('idParticipant', 'username')
-                    .populate('idQuiz', 'name');
+                return;
+            }
 
-                const resultsData = results.map(result => {
-                    return {
+            const results = await Result.find({ idQuiz: idQuiz })
+                .populate('idParticipant', 'username email avatar _id')
+                .populate('idQuiz', 'name');
+
+            if (!results || results.length === 0) {
+                reject({
+                    status: 'ERR',
+                    message: 'No results found for the specified quiz'
+                });
+                return;
+            }
+
+            const bestScores = {};
+            results.forEach(result => {
+                const participantId = result.idParticipant._id.toString();
+                if (!bestScores[participantId] ||
+                    result.score > bestScores[participantId].score ||
+                    (result.score === bestScores[participantId].score && result.attempTime < bestScores[participantId].attempTime) ||
+                    (result.score === bestScores[participantId].score && result.attempTime === bestScores[participantId].attempTime && result.completeTime < bestScores[participantId].completeTime)
+                ) {
+                    bestScores[participantId] = result;
+                }
+            });
+
+            let sortedResults = Object.values(bestScores).sort((a, b) => {
+                if (b.score !== a.score) return b.score - a.score;
+                if (a.attempTime !== b.attempTime) return a.attempTime - b.attempTime;
+                return a.completeTime - b.completeTime;
+            });
+
+            let myData = null;
+
+            sortedResults = sortedResults.map((result, index) => {
+                const rank = index + 1;
+                const userData = {
+                    rank: rank,
+                    user: {
+                        id: result.idParticipant._id,
                         username: result.idParticipant.username,
-                        score: result.score
-                    };
-                });
+                        email: result.idParticipant.email,
+                        avatar: result.idParticipant.avatar
+                    },
+                    score: result.score,
+                    attempTime: result.attempTime,
+                    completeTime: result.completeTime
+                };
 
-                if (!results || results.length === 0) {
-                    reject({
-                        status: 'ERR',
-                        message: 'No results found for the specified quiz'
-                    });
-                    return;
+                if (userId && result.idParticipant._id.toString() === userId) {
+                    myData = { ...userData, myRanking: rank };
                 }
 
-                resolve({
-                    status: 'OK',
-                    message: 'SUCCESS',
-                    data: resultsData
-                });
-            }
+                return userData;
+            });
+
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: {
+                    leaderBoard: sortedResults, 
+                    myData: myData
+                }
+            });
         } catch (e) {
             reject(e);
         }
     });
 };
+
+
+
+
+
 
 const updateResult = async (ResultId, data) => {
     return new Promise(async (resolve, reject) => {

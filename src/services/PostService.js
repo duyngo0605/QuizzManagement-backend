@@ -40,26 +40,43 @@ const createPost = async (newPost, token) => {
 }
 
 
-const getPost = (id, teamId) => {
+const getPost = (id, teamId, token) => {
     return new Promise(async (resolve, reject) => {
         try {
             let query = {};
             if (id) query._id = id;
             if (teamId) query.team = teamId;
 
+            let userId = null;
+            if (token ) {
+                try {
+                    const decoded = await verifyToken(token);
+                    userId = decoded?.id;
+                   
+                } catch (error) {
+                    return reject({ status: 'ERR', message: 'Invalid token' });
+                }
+            }
             const posts = await Post.find(query)
                 .populate('quiz')
                 .populate('creator', 'email avatar') 
-                .populate('comments','_id') 
-                .select('-likes') 
+                .populate('comments', '_id') 
+                .select('likes') 
                 .lean(); 
 
-         
-            const postData = posts.map(post => ({
-                ...post,
-                likeCount: post.likes ? post.likes.length : 0, 
-    commentCount: post.comments ? post.comments.length : 0
-            }));
+            const postData = posts.map(post => {
+                let postResult = {
+                    ...post,
+                    likeCount: post.likes ? post.likes.length : 0,
+                    commentCount: post.comments ? post.comments.length : 0
+                };
+
+                if (userId) {
+                    postResult.statusLike = post.likes.some(like => like.user.toString() === userId);
+                }
+
+                return postResult;
+            });
 
             resolve({
                 status: 'OK',
@@ -71,6 +88,7 @@ const getPost = (id, teamId) => {
         }
     });
 };
+
 
 const updatePost = async (PostId, data) => {
     return new Promise(async (resolve, reject) => {
@@ -123,9 +141,49 @@ const deletePost = (id) => {
     })
 }
 
+
+const toggleLikePost = async (postId, token) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+          
+            
+            const decoded = await verifyToken(token)
+            const userId = decoded?.id
+            const post = await Post.findById(postId);
+            if (!post) {
+                return reject({ status: 'ERR', message: 'Post not found' });
+            }
+            if (!userId) {
+                return reject({ status: 'ERR', message: 'User not found' });
+            }
+          
+            const alreadyLikedIndex = post.likes.findIndex(like => like.user.toString() === userId);
+
+            if (alreadyLikedIndex !== -1) {
+                
+                post.likes.splice(alreadyLikedIndex, 1);
+            } else {
+              
+                post.likes.push({ user: userId });
+            }
+
+            await post.save();
+
+            resolve({
+                status: 'OK',
+                message: alreadyLikedIndex !== -1 ? 'Post unliked successfully' : 'Post liked successfully',
+                data: post
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
 module.exports = {
     createPost,
     getPost,
     updatePost,
     deletePost,
-}
+    toggleLikePost
+};

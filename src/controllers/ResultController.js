@@ -63,16 +63,19 @@ const getResult = async (req, res) => {
 
 const getLeadBoard = async (req, res) => {
     try {
-        const { idQuiz } = req.body
-        console.log('idQuiz', idQuiz)
-        const response = await ResultService.getLeadBoard(idQuiz)
-        return res.status(200).json(response)
+        const { idQuiz } = req.body;
+        const authHeader = req.headers.authorization;
+        const token = authHeader ? authHeader.split(' ')[1] : null; 
+
+        const response = await ResultService.getLeadBoard(idQuiz, token); 
+        return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({
-            message: e
-        })
+            message: e.message || 'Something went wrong'
+        });
     }
-}
+};
+
 
 
 const updateResult =  async (req, res) => {    

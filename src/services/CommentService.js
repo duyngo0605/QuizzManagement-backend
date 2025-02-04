@@ -1,6 +1,7 @@
 const Comment = require('../models/Comment')
 const { verifyToken } = require('../middleware/authMiddleware');
 const Post = require('../models/Post');
+const Quiz = require('../models/Quiz');
 const createComment = async (newComment, token) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -14,13 +15,12 @@ const createComment = async (newComment, token) => {
             const decoded = await verifyToken(token);
             const idUser = decoded.id;
 
-            if (!newComment.post) {
+            if (!newComment.post && !newComment.quiz) {
                 return reject({
                     status: 'ERR',
-                    message: 'Post ID is required'
+                    message: 'Post ID or Quiz ID is required'
                 });
             }
-
           
             if (newComment.parent) {
                 const parentComment = await Comment.findById(newComment.parent);
@@ -46,10 +46,15 @@ const createComment = async (newComment, token) => {
                 user: idUser,
                 parent: newComment.parent || null
             });
-
-           Post.findByIdAndUpdate(newComment.post, {
-                $push: { comments: createdComment._id }
-            }).exec(); 
+            if (newComment.post) {
+                await Post.findByIdAndUpdate(newComment.post, {
+                    $push: { comments: createdComment._id }
+                }).exec();
+            } else if (newComment.quiz) {
+                await Quiz.findByIdAndUpdate(newComment.quiz, {
+                    $push: { comments: createdComment._id }
+                }).exec();
+            }
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
@@ -66,25 +71,31 @@ const createComment = async (newComment, token) => {
 
 
 
-const getComment = async (idPost) => {
+const getComment = async (idPost, idQuiz) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!idPost) {
+            if (!idPost && !idQuiz) {
                 return reject({
                     status: 'ERR',
-                    message: 'Post ID is required'
+                    message: 'Post ID or Quiz ID is required'
                 });
             }
 
-        
-            let comments = await Comment.find({ post: idPost, parent: null })
+            let filter = {};
+            if (idPost) {
+                filter.post = idPost;
+            } else {
+                filter.quiz = idQuiz;
+            }
+
+            let comments = await Comment.find({ ...filter, parent: null })
                 .populate('user', 'email')
-                .select('-parent')
+                .select('-parent');
 
             for (let comment of comments) {
                 comment._doc.replies = await Comment.find({ parent: comment._id })
                     .populate('user', 'email avatar')
-                    .select('-post -parent'); // Không cần lấy lại post/parent
+                    .select('-post -quiz -parent');
             }
 
             resolve({

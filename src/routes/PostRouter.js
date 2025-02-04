@@ -8,5 +8,5 @@ router.put('/:id', PostController.updatePost)
 router.delete('/:id', PostController.deletePost)
 router.get('/:id?', PostController.getPost)
 router.post('/many', PostController.createManyPosts)
-
+router.post('/:id/like', PostController.toggleLikePost);
 module.exports = router
