@@ -68,6 +68,7 @@ const loginUser =  async (req, res) => {
                 message: 'The input is required'
             })
         }
+        
         const response = await UserService.loginUser(req.body)
         
         return res.status(200).json(response)
@@ -124,7 +125,29 @@ const deleteUser = async (req,res) => {
     }
 }
 
+const changeProfile = async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+    
+        
+        if (!token) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'Token is required'
+            });
+        }
 
+        const data = req.body;
+        const response = await UserService.changeProfile(token, data);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERR',
+            message: 'Internal Server Error',
+            error: e.message
+        });
+    }
+};
 
 const refreshToken = async (req, res) => {
     try {
@@ -170,5 +193,6 @@ module.exports = {
     getUser,
     refreshToken,
     logoutUser,
-    createManyUsers
+    createManyUsers,
+    changeProfile
 }

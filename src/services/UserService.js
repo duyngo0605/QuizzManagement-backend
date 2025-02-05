@@ -115,6 +115,17 @@ const getUser = (id, token) => {
             const idUser = decoded.id;
             
             if (!id) {
+                const user = await User.findOne({ _id: idUser });
+
+                if (user) {
+                    resolve({
+                        status: 'OK',
+                        message: 'Success',
+                        data: user
+                    });
+                }
+
+                
                 const allUser = await User.find();
                 resolve({
                     status: 'OK',
@@ -165,7 +176,6 @@ const getUser = (id, token) => {
 
 const updateUser = async (userId, data) => {
     return new Promise(async (resolve, reject) => {
-
         try {
             const checkUser = await User.findOne({
                 _id: userId
@@ -220,10 +230,71 @@ const deleteUser = (id) => {
     })
 }
 
+
+const changeProfile = async (token, data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+        
+            
+            const decoded = await verifyToken(token);
+            const userId = decoded.id;
+
+            if (!userId) {
+                return reject({
+                    status: 'ERR',
+                    message: 'Unauthorized request'
+                });
+            }
+
+            const user = await User.findById(userId);
+            if (!user) {
+                return reject({
+                    status: 'ERR',
+                    message: 'User not found'
+                });
+            }
+
+          
+            if (data.password && data.oldPassword) {
+                const isMatch = bcrypt.compareSync(data.oldPassword, user.password);
+                if (!isMatch) {
+                    return reject({
+                        status: 'ERR',
+                        message: 'Old password is incorrect'
+                    });
+                }
+               
+                data.password = bcrypt.hashSync(data.password, 10);
+            } else if (data.password && !data.oldPassword) {
+                return reject({
+                    status: 'ERR',
+                    message: 'Old password is required to change the password'
+                });
+            }
+
+            const updatedUser = await User.findByIdAndUpdate(userId, data, { new: true });
+
+            resolve({
+                status: 'OK',
+                message: 'User updated successfully',
+                data: updatedUser
+            });
+        } catch (e) {
+            reject({
+                status: 'ERR',
+                message: 'Server error',
+                error: e.message
+            });
+        }
+    });
+};
+
+
 module.exports = {
     createUser,
     loginUser,
     getUser,
     updateUser,
     deleteUser,
+    changeProfile
 }
