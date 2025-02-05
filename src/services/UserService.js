@@ -1,6 +1,7 @@
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
 const Friendship = require('../models/FriendShip')
+const Result=require('../models/Result')
 const { verifyToken } = require('../middleware/authMiddleware')
 const { generateAccessToken, generateRefreshToken, decodeAccessToken } = require('./JwtService')
 
@@ -106,107 +107,139 @@ const loginUser = async (loginModel) => {
 
 const getUser = (id, token) => {
     return new Promise(async (resolve, reject) => {
-
         try {
             const decoded = await verifyToken(token);
             const idUser = decoded.id;
-            const isAdmin = decoded.role === 'admin';
+            const isAdmin = decoded.role === "admin";
 
+            if(!id){
             if (isAdmin) {
-                const users = await User.find();
-
-                resolve({
-                    status: 'OK',
-                    message: 'SUCCESS',
-                    data: users
+                const users = await User.find().select("-password");
+                return resolve({
+                    status: "OK",
+                    message: "SUCCESS",
+                    data: users,
                 });
             }
+        }
 
-
-            if (!id) {
-                const user = await User.findOne({ _id: idUser });
-
-                if (user) {
-                    resolve({
-                        status: 'OK',
-                        message: 'Success',
-                        data: user
-                    });
-                }
-
-            } else {
-                const user = await User.findOne({ _id: id });
-
-                if (!user) {
-                    return reject({
-                        status: 'ERR',
-                        message: 'The user is not defined'
-                    });
-                }
-                const friendship = await Friendship.findOne({
-                    $or: [
-                        { requester: idUser, recipient: id },
-                        { requester: id, recipient: idUser }
-                    ]
-                });
-
-                let friendshipStatus = "none";
-                if (friendship) {
-                    if (friendship.status === "accepted") {
-                        friendshipStatus = "friends";
-                    } else if (friendship.status === "pending" && friendship.requester.toString() === idUser) {
-                        friendshipStatus = "request_sent";
-                    } else if (friendship.status === "pending" && friendship.recipient.toString() === idUser) {
-                        friendshipStatus = "request_received";
-                    } else if (friendship.status === "blocked") {
-                        friendshipStatus = "blocked";
-                    }
-                }
-
-                resolve({
-                    status: 'OK',
-                    message: 'SUCCESS',
-                    data: { ...user._doc, friendshipStatus }
-                });
+            let targetUserId = id ;
+            
+            const user = await User.findOne({ _id: targetUserId }).select("-password");
+            
+            if (!user) {
                 return reject({
-                    status: 'ERR',
-                    message: 'The user is not defined'
+                    status: "ERR",
+                    message: "The user is not defined",
                 });
             }
+
+            
+            const friendCount = await Friendship.countDocuments({
+                $or: [{ requester: targetUserId }, { recipient: targetUserId }],
+                status: "accepted",
+            });
+
+            
+            const totalScore = await Result.aggregate([
+                { $match: { idParticipant: user._id } },
+                { $group: { _id: null, total: { $sum: "$score" } } },
+            ]);
+
+            
+            const quizCount = user.library.quizzes.length;
+            const questionCount = user.library.questions.length;
+
+
+            const friendship = await Friendship.findOne({
+                $or: [
+                    { requester: idUser, recipient: targetUserId },
+                    { requester: targetUserId, recipient: idUser },
+                ],
+            });
+
+            let friendshipStatus = "none";
+            if (friendship) {
+                if (friendship.status === "accepted") {
+                    friendshipStatus = "friends";
+                } else if (friendship.status === "pending" && friendship.requester.toString() === idUser) {
+                    friendshipStatus = "request_sent";
+                } else if (friendship.status === "pending" && friendship.recipient.toString() === idUser) {
+                    friendshipStatus = "request_received";
+                } else if (friendship.status === "blocked") {
+                    friendshipStatus = "blocked";
+                }
+            }
+
+            resolve({
+                status: "OK",
+                message: "SUCCESS",
+                data: {
+                    ...user._doc,
+                    friendCount,
+                    totalScore: totalScore.length > 0 ? totalScore[0].total : 0,
+                    quizCount,
+                    questionCount,
+                    friendshipStatus,
+                },
+            });
         } catch (e) {
             reject(e);
         }
     });
 };
+
 
 
 const getMyProfile = (token) => {
     return new Promise(async (resolve, reject) => {
-
         try {
             const decoded = await verifyToken(token);
             const idUser = decoded.id;
 
+            // Lấy thông tin user
+            const user = await User.findOne({ _id: idUser }).select("-password");
 
-            const user = await User.findOne({ _id: idUser });
-
-            if (user) {
-                resolve({
-                    status: 'OK',
-                    message: 'Success',
-                    data: user
+            if (!user) {
+                return reject({
+                    status: "ERR",
+                    message: "The user is not defined",
                 });
             }
-            return reject({
-                status: 'ERR',
-                message: 'The user is not defined'
+
+            // Đếm số lượng bạn bè (Friendship có status là "accepted")
+            const friendCount = await Friendship.countDocuments({
+                $or: [{ requester: idUser }, { recipient: idUser }],
+                status: "accepted",
             });
 
+            // Tính tổng điểm của user từ bảng Result
+            const totalScore = await Result.aggregate([
+                { $match: { idParticipant: user._id } },
+                { $group: { _id: null, total: { $sum: "$score" } } },
+            ]);
+
+            // Lấy số lượng quiz và question từ library của user
+            const quizCount = user.library.quizzes.length;
+            const questionCount = user.library.questions.length;
+
+            resolve({
+                status: "OK",
+                message: "Success",
+                data: {
+                    user,
+                    friendCount,
+                    totalScore: totalScore.length > 0 ? totalScore[0].total : 0,
+                    quizCount,
+                    questionCount,
+                },
+            });
         } catch (e) {
             reject(e);
         }
     });
 };
+
 
 
 const updateUser = async (userId, data) => {
