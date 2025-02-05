@@ -1,7 +1,7 @@
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
 const Friendship = require('../models/FriendShip')
-const {verifyToken} = require('../middleware/authMiddleware')
+const { verifyToken } = require('../middleware/authMiddleware')
 const { generateAccessToken, generateRefreshToken, decodeAccessToken } = require('./JwtService')
 
 const createUser = async (newUser) => {
@@ -17,8 +17,8 @@ const createUser = async (newUser) => {
             const checkUser = await User.findOne({
                 username: username
             })
-    
-            if (checkUser){
+
+            if (checkUser) {
                 reject({
                     status: 'ERR',
                     message: 'The user was existed.'
@@ -33,13 +33,12 @@ const createUser = async (newUser) => {
                 avatar,
                 email
             })
-            if (createdUser)
-            { 
-            resolve({
-                status: 'OK',
-                message: 'SUCCESS',
-                data: createdUser
-            })
+            if (createdUser) {
+                resolve({
+                    status: 'OK',
+                    message: 'SUCCESS',
+                    data: createdUser
+                })
             }
         }
 
@@ -51,7 +50,7 @@ const createUser = async (newUser) => {
 
 const loginUser = async (loginModel) => {
     return new Promise(async (resolve, reject) => {
-        const { username, password} = loginModel
+        const { username, password } = loginModel
         if (!username || !password) {
             reject({
                 status: 'ERR',
@@ -63,7 +62,7 @@ const loginUser = async (loginModel) => {
                 username: username
             })
 
-            if (!checkUser){
+            if (!checkUser) {
                 reject({
                     status: 'ERR',
                     message: 'The user is not defined.'
@@ -71,34 +70,32 @@ const loginUser = async (loginModel) => {
             }
             const comparepassword = bcrypt.compareSync(password, checkUser.password);
 
-            if (comparepassword)
-            { 
+            if (comparepassword) {
                 const access_token = await generateAccessToken({
                     id: checkUser.id,
                     username: checkUser.username,
                     role: checkUser.role
                 })
-    
+
                 const refresh_token = await generateRefreshToken({
                     id: checkUser.id,
                     username: checkUser.username,
                     role: checkUser.role
                 })
-            resolve({
-                status: 'OK',
-                message: 'SUCCESS',
-                access_token,
-                refresh_token,
-            })
+                resolve({
+                    status: 'OK',
+                    message: 'SUCCESS',
+                    access_token,
+                    refresh_token,
+                })
             }
-            else
-            {
+            else {
                 reject({
                     status: 'ERR',
                     message: 'The password is not correct.'
                 })
             }
-            
+
         }
 
         catch (e) {
@@ -109,7 +106,7 @@ const loginUser = async (loginModel) => {
 
 const getUser = (id, token) => {
     return new Promise(async (resolve, reject) => {
-    
+
         try {
             const decoded = await verifyToken(token);
             const idUser = decoded.id;
@@ -125,7 +122,7 @@ const getUser = (id, token) => {
                 });
             }
 
-            
+
             if (!id) {
                 const user = await User.findOne({ _id: idUser });
 
@@ -139,7 +136,7 @@ const getUser = (id, token) => {
 
             } else {
                 const user = await User.findOne({ _id: id });
-                
+
                 if (!user) {
                     return reject({
                         status: 'ERR',
@@ -171,7 +168,40 @@ const getUser = (id, token) => {
                     message: 'SUCCESS',
                     data: { ...user._doc, friendshipStatus }
                 });
+                return reject({
+                    status: 'ERR',
+                    message: 'The user is not defined'
+                });
             }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
+
+const getMyProfile = (token) => {
+    return new Promise(async (resolve, reject) => {
+
+        try {
+            const decoded = await verifyToken(token);
+            const idUser = decoded.id;
+
+
+            const user = await User.findOne({ _id: idUser });
+
+            if (user) {
+                resolve({
+                    status: 'OK',
+                    message: 'Success',
+                    data: user
+                });
+            }
+            return reject({
+                status: 'ERR',
+                message: 'The user is not defined'
+            });
+
         } catch (e) {
             reject(e);
         }
@@ -185,19 +215,18 @@ const updateUser = async (userId, data) => {
             const checkUser = await User.findOne({
                 _id: userId
             })
-            if (!checkUser){
+            if (!checkUser) {
                 reject({
                     status: 'ERR',
                     message: 'The user is not defined.'
                 })
             }
-            if (data.password)
-            {
+            if (data.password) {
                 const hash = bcrypt.hashSync(data.password, 10);
                 data.password = hash;
             }
 
-            const updatedUser = await User.findByIdAndUpdate(userId, data, {new: true})
+            const updatedUser = await User.findByIdAndUpdate(userId, data, { new: true })
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
@@ -239,8 +268,8 @@ const deleteUser = (id) => {
 const changeProfile = async (token, data) => {
     return new Promise(async (resolve, reject) => {
         try {
-        
-            
+
+
             const decoded = await verifyToken(token);
             const userId = decoded.id;
 
@@ -259,7 +288,7 @@ const changeProfile = async (token, data) => {
                 });
             }
 
-          
+
             if (data.password && data.oldPassword) {
                 const isMatch = bcrypt.compareSync(data.oldPassword, user.password);
                 if (!isMatch) {
@@ -268,7 +297,7 @@ const changeProfile = async (token, data) => {
                         message: 'Old password is incorrect'
                     });
                 }
-               
+
                 data.password = bcrypt.hashSync(data.password, 10);
             } else if (data.password && !data.oldPassword) {
                 return reject({
@@ -301,5 +330,6 @@ module.exports = {
     getUser,
     updateUser,
     deleteUser,
-    changeProfile
+    changeProfile,
+    getMyProfile
 }

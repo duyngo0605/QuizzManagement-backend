@@ -59,6 +59,20 @@ const getUser = async (req, res) => {
     }
 }
 
+const getMyProfile = async (req, res) => {
+    try {
+    
+        const token = req.headers.authorization.split(' ')[1];
+    
+        const response = await UserService.getMyProfile(token)
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 const loginUser =  async (req, res) => {    
     try {
         const { username, password} = req.body
@@ -194,5 +208,6 @@ module.exports = {
     refreshToken,
     logoutUser,
     createManyUsers,
-    changeProfile
+    changeProfile,
+    getMyProfile
 }
