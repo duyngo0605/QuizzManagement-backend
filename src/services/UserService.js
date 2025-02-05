@@ -113,6 +113,18 @@ const getUser = (id, token) => {
         try {
             const decoded = await verifyToken(token);
             const idUser = decoded.id;
+            const isAdmin = decoded.role === 'admin';
+
+            if (isAdmin) {
+                const users = await User.find();
+
+                resolve({
+                    status: 'OK',
+                    message: 'SUCCESS',
+                    data: users
+                });
+            }
+
             
             if (!id) {
                 const user = await User.findOne({ _id: idUser });
@@ -125,13 +137,6 @@ const getUser = (id, token) => {
                     });
                 }
 
-                
-                const allUser = await User.find();
-                resolve({
-                    status: 'OK',
-                    message: 'Success',
-                    data: allUser
-                });
             } else {
                 const user = await User.findOne({ _id: id });
                 
