@@ -8,5 +8,6 @@ router.put('/:id', authMiddleWare, TopicController.updateTopic)
 router.delete('/:id', authMiddleWare, TopicController.deleteTopic)
 router.get('/:id?', TopicController.getTopic)
 router.post('/many', TopicController.createManyTopics)
+router.get('/stats/:id', TopicController.getTopicStats)
 
 module.exports = router
