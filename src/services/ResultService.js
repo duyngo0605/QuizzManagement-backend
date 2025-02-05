@@ -45,6 +45,8 @@ const createResult = async (newResult, token) => {
                 ...newResult,
                 idParticipant: decoded.id
             });
+            const populatedResult = await Result.findById(createdResult._id)
+            .populate('idQuiz', 'name image _id');
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
@@ -56,11 +58,18 @@ const createResult = async (newResult, token) => {
     });
 };
 
-const getResult = (id) => {
+const getResult = (id, token) => {
     return new Promise(async (resolve, reject) => {
         try {
             if (!id) {
-                const allResult = await Result.find();
+                let query = {};
+                
+                if (token) {
+                    const decoded = await verifyToken(token);
+                    query.userId = decoded.id;
+                }
+
+                const allResult = await Result.find(query).populate('idQuiz', 'name image _id');
                 resolve({
                     status: 'OK',
                     message: 'Success',
@@ -82,10 +91,14 @@ const getResult = (id) => {
                 });
             }
         } catch (e) {
-            reject(e);
+            reject({
+                status: 'ERR',
+                message: e.message || 'Internal Server Error'
+            });
         }
     });
 };
+
 
 const getLeadBoard = (idQuiz, token) => {
     return new Promise(async (resolve, reject) => {
