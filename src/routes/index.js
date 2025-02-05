@@ -7,7 +7,7 @@ const RequestJoinRouter = require("./RequestJoinRouter")
 const ResultRouter = require("./ResultRouter")
 const PostRouter = require("./PostRouter")
 const CommentRouter = require("./CommentRouter")
-
+const FriendRouter = require("./FriendRouter")
 const routes = (app) => {
     app.use("/api/user", UserRouter);
     app.use("/api/topic", TopicRouter);
@@ -18,6 +18,7 @@ const routes = (app) => {
     app.use("/api/result", ResultRouter);
     app.use("/api/post", PostRouter);
     app.use("/api/comment", CommentRouter);
+    app.use("/api/friend", FriendRouter);
   };
   
   module.exports = routes;

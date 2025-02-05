@@ -227,7 +227,7 @@ const getMyProfile = (token) => {
                 status: "OK",
                 message: "Success",
                 data: {
-                    user,
+                    ...user._doc,
                     friendCount,
                     totalScore: totalScore.length > 0 ? totalScore[0].total : 0,
                     quizCount,

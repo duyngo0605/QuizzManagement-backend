@@ -52,7 +52,8 @@ const createManyResults = async (req, res) => {
 const getResult = async (req, res) => {
     try {
         const ResultId = req.params.id
-        const response = await ResultService.getResult(ResultId)
+        const token = req.headers.authorization?.split(' ')[1]
+        const response = await ResultService.getResult(ResultId,token)
         return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({
