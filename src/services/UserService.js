@@ -361,6 +361,16 @@ const getUserStats = () => {
         try {
                     // Tổng số user
                     const totalUsers = await User.countDocuments();
+
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const newUsersToday = await User.countDocuments({
+                        createdAt: {
+                            $gte: today,
+                            $lt: new Date(today.getTime() + 24 * 60 * 60 * 1000)
+                        }
+                    });
+
         
                     // Thống kê user theo ngày
                     const dailyStats = await User.aggregate([
@@ -435,6 +445,7 @@ const getUserStats = () => {
                         message: "Success",
                         data: {
                             totalUsers,
+                            newUsersToday,
                             dailyStats,
                             topQuizCreators,
                             topQuestionCreators,
