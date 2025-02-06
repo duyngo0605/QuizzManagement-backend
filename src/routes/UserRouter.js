@@ -10,8 +10,10 @@ router.put('/change-profile',UserController.changeProfile)
 router.put('/:id', authUserMiddleWare, UserController.updateUser)
 router.delete('/:id', authMiddleWare, UserController.deleteUser)
 router.get('/my-profile', UserController.getMyProfile)
+router.get('/stats', authMiddleWare, UserController.getUserStats)
 router.get('/:id?', UserController.getUser)
 router.post('/refresh-token', UserController.refreshToken)
 router.post('/many', UserController.createManyUsers)
+
 
 module.exports = router

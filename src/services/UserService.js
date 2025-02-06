@@ -356,6 +356,103 @@ const changeProfile = async (token, data) => {
     });
 };
 
+const getUserStats = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+                    // Tổng số user
+                    const totalUsers = await User.countDocuments();
+        
+                    // Thống kê user theo ngày
+                    const dailyStats = await User.aggregate([
+                        {
+                            $group: {
+                                _id: {
+                                    year: { $year: "$createdAt" },
+                                    month: { $month: "$createdAt" },
+                                    day: { $dayOfMonth: "$createdAt" }
+                                },
+                                count: { $sum: 1 }
+                            }
+                        },
+                        { $sort: { "_id.year": -1, "_id.month": -1, "_id.day": -1 } }
+                    ]);
+        
+                    const topQuizCreators = await User.aggregate([
+                        {
+                            $project: {
+                                username: 1,
+                                email: 1,
+                                totalQuizzes: { $size: "$library.quizzes" }
+                            }
+                        },
+                        { $sort: { totalQuizzes: -1 } },
+                        { $limit: 5 }
+                    ]);
+                    
+                    // User có nhiều question nhất
+                    const topQuestionCreators = await User.aggregate([
+                        {
+                            $project: {
+                                username: 1,
+                                email: 1,
+                                totalQuestions: { $size: "$library.questions" }
+                            }
+                        },
+                        { $sort: { totalQuestions: -1 } },
+                        { $limit: 5 }
+                    ]);
+        
+                    // User có nhiều lượt làm quiz nhất
+                    const topActiveUsers = await Result.aggregate([
+                        {
+                            $group: {
+                                _id: "$idParticipant",
+                                totalAttempts: { $sum: 1 }
+                            }
+                        },
+                        {
+                            $lookup: {
+                                from: "users",
+                                localField: "_id",
+                                foreignField: "_id",
+                                as: "userInfo"
+                            }
+                        },
+                        { $unwind: "$userInfo" },
+                        {
+                            $project: {
+                                username: "$userInfo.username",
+                                email: "$userInfo.email",
+                                totalAttempts: 1
+                            }
+                        },
+                        { $sort: { totalAttempts: -1 } },
+                        { $limit: 5 }
+                    ]);
+        
+                    resolve({
+                        status: "OK",
+                        message: "Success",
+                        data: {
+                            totalUsers,
+                            dailyStats,
+                            topQuizCreators,
+                            topQuestionCreators,
+                            topActiveUsers
+                        }
+                    });
+        
+                } catch (error) {
+                    console.error('Error getting home stats:', error);
+                   reject({
+                        status: 'ERR',
+                        message: 'Server error',
+                        error: error.message
+                    });
+                }
+            });
+}
+
 
 module.exports = {
     createUser,
@@ -364,5 +461,6 @@ module.exports = {
     updateUser,
     deleteUser,
     changeProfile,
-    getMyProfile
+    getMyProfile,
+    getUserStats
 }

@@ -26,7 +26,7 @@ const createManyUsers = async (req, res) => {
 
         const responses = [];
         for (const question of Users) {
-            const response = await Userservice.createQuestion(question);
+            const response = await UserService.createUser(question);
             responses.push(response);
         }
 
@@ -199,6 +199,18 @@ const logoutUser = async (req, res) => {
     }
 }
 
+const getUserStats = async (req, res) => {
+    try {
+        const response = await UserService.getUserStats()
+        return res.status(200).json(response)
+    }
+    catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 module.exports = {
     createUser,
     loginUser,
@@ -209,5 +221,6 @@ module.exports = {
     logoutUser,
     createManyUsers,
     changeProfile,
-    getMyProfile
+    getMyProfile,
+    getUserStats
 }
