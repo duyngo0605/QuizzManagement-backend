@@ -203,6 +203,17 @@ const getPractice = async (req, res) => {
     }
 }
 
+const getQuizStats = async (req, res) => {
+    try {
+        const response = await QuizService.getQuizStats()
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERR',
+            message: e.message || 'Internal Server Error',
+        });
+    }
+}
 
 module.exports = {
     createQuiz,
@@ -214,5 +225,6 @@ module.exports = {
     removeQuestions,
     createManyQuizzes,
     getMyQuiz,
-    getPractice
+    getPractice,
+    getQuizStats
 }
