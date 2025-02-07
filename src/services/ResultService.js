@@ -50,7 +50,7 @@ const createResult = async (newResult, token) => {
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
-                data: createdResult
+                data: populatedResult
             });
         } catch (e) {
             reject(e);

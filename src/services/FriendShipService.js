@@ -36,33 +36,45 @@ const sendFriendRequest = async (requesterId, recipientId) => {
 
   
 
-  async function acceptFriendRequest(requesterId, recipientId) {
-    const friendship = await FriendShip.findOneAndUpdate(
-      { requester: requesterId, recipient: recipientId, status: "pending" },
-      { status: "accepted" },
-      { new: true }
-    );
-    return friendship;
+
+const cancelFriendRequest = async (requesterId, recipientId) => {
+  try {
+      const deletedRequest = await FriendShip.findOneAndDelete({
+          $or: [
+              { requester: requesterId, recipient: recipientId, status: "pending" },
+              { requester: recipientId, recipient: requesterId, status: "pending" }
+          ]
+      });
+
+      if (!deletedRequest) {
+          return { status: "ERR", message: "Không tìm thấy lời mời kết bạn hoặc đã bị hủy" };
+      }
+
+      return { status: "OK", message: "Đã hủy lời mời kết bạn" };
+  } catch (error) {
+      throw new Error(error.message);
   }
-
-  const cancelFriendRequest = async (requesterId, recipientId) => {
-    try {
-        const deletedRequest = await FriendShip.findOneAndDelete({
-            requester: requesterId,
-            recipient: recipientId,
-            status: "pending"
-        });
-
-        if (!deletedRequest) {
-            return { status: "ERR", message: "Không tìm thấy lời mời kết bạn hoặc đã bị hủy" };
-        }
-
-        return { status: "OK", message: "Đã hủy lời mời kết bạn" };
-    } catch (error) {
-        throw new Error(error.message);
-    }
 };
 
+
+
+const acceptFriendRequest = async (requesterId, recipientId) => {
+  try {
+      const friendship = await FriendShip.findOneAndUpdate(
+          { requester: requesterId, recipient: recipientId, status: "pending" },
+          { status: "accepted" },
+          { new: true }
+      );
+
+      if (!friendship) {
+          return { status: "ERR", message: "Không tìm thấy lời mời kết bạn" };
+      }
+
+      return { status: "OK", message: "Đã chấp nhận lời mời kết bạn" };
+  } catch (error) {
+      throw new Error(error.message);
+  }
+};
 
   
   async function blockUser(userId, blockedUserId) {
@@ -73,12 +85,53 @@ const sendFriendRequest = async (requesterId, recipientId) => {
     );
   }
 
-  async function getFriends(userId) {
-    return await FriendShip.find({
-      $or: [{ requester: userId }, { recipient: userId }],
+  const getFriendRequests = async (userId) => {
+    try {
+        const requests = await FriendShip.find({ recipient: userId, status: "pending" })
+            .populate("requester", "_id email avatar");
+
+        return {
+            status: "OK",
+            message: "Lấy danh sách lời mời kết bạn thành công",
+            data: requests
+        };
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
+const getListFriend = async (userId) => {
+  try {
+    console.log(userId);
+
+    // Tìm các mối quan hệ bạn bè có userId là requester hoặc recipient
+    const requests = await FriendShip.find({
+      $or: [{ recipient: userId }, { requester: userId }],
       status: "accepted"
-    }).populate("requester recipient");
+    })
+    .populate("requester", "email avatar") // Lấy thông tin requester
+    .populate("recipient", "email avatar"); // Lấy thông tin recipient
+
+    // Xử lý danh sách để chỉ lấy thông tin người còn lại
+    const friends = requests.map((friendship) => {
+      return {
+        user: String(friendship.requester._id) === userId 
+          ? friendship.recipient // Nếu userId là requester → Lấy recipient
+          : friendship.requester // Nếu userId là recipient → Lấy requester
+      };
+    });
+
+    return {
+      status: "OK",
+      message: "Lấy danh sách bạn bè thành công",
+      data: friends
+    };
+  } catch (error) {
+    throw new Error(error.message);
   }
+};
+
+
   
   
 
@@ -87,5 +140,6 @@ const sendFriendRequest = async (requesterId, recipientId) => {
     acceptFriendRequest,
     cancelFriendRequest,
     blockUser,
-    getFriends
+    getFriendRequests,
+    getListFriend
 }
