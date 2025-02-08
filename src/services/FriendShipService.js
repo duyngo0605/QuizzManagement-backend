@@ -104,20 +104,20 @@ const getListFriend = async (userId) => {
   try {
     console.log(userId);
 
-    // Tìm các mối quan hệ bạn bè có userId là requester hoặc recipient
+    
     const requests = await FriendShip.find({
       $or: [{ recipient: userId }, { requester: userId }],
       status: "accepted"
     })
-    .populate("requester", "email avatar") // Lấy thông tin requester
-    .populate("recipient", "email avatar"); // Lấy thông tin recipient
+    .populate("requester", "email avatar") 
+    .populate("recipient", "email avatar"); 
 
-    // Xử lý danh sách để chỉ lấy thông tin người còn lại
+    
     const friends = requests.map((friendship) => {
       return {
         user: String(friendship.requester._id) === userId 
-          ? friendship.recipient // Nếu userId là requester → Lấy recipient
-          : friendship.requester // Nếu userId là recipient → Lấy requester
+          ? friendship.recipient 
+          : friendship.requester 
       };
     });
 

@@ -9,6 +9,7 @@ const PostRouter = require("./PostRouter")
 const CommentRouter = require("./CommentRouter")
 const FriendRouter = require("./FriendRouter")
 const ConversationRouter = require("./ConversationRouter")
+const MessageRouter = require("./MessageRouter")
 const routes = (app) => {
     app.use("/api/user", UserRouter);
     app.use("/api/topic", TopicRouter);
@@ -21,6 +22,7 @@ const routes = (app) => {
     app.use("/api/comment", CommentRouter);
     app.use("/api/friend", FriendRouter);
     app.use("/api/conversation", ConversationRouter);
+    app.use("/api/message", MessageRouter);
   };
   
   module.exports = routes;

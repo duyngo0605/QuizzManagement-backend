@@ -1,26 +1,25 @@
 const { verifyToken } = require('../middleware/authMiddleware')
 const Conversation = require("../models/Conversation");
 const User = require("../models/User");
-
+const Message = require("../models/Message");
 const getListConversation = async (req, res) => {
   try {
-    
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
-        return res.status(400).json({ status: "ERR", message: "Token is required" });
+      return res.status(400).json({ status: "ERR", message: "Token is required" });
     }
 
     const decoded = await verifyToken(token);
     const userId = decoded.id;
-   
+
     const conversations = await Conversation.find({
       $or: [{ user1: userId }, { user2: userId }]
     })
-      .populate("user1", "name email avatar") 
-      .populate("user2", "name email avatar") 
-      .populate("lastMessage.messageId", "content sentAt") 
-      .populate("lastMessage.senderId", "name") 
-      .sort({ "lastMessage.sentAt": -1 }); 
+      .populate("user1", "email avatar")
+      .populate("user2", "email avatar")
+      .populate("lastMessage.messageId", "content sentAt")
+      .populate("lastMessage.senderId", "email")
+      .sort({ "lastMessage.sentAt": -1 });
 
     const formattedConversations = conversations.map((conversation) => {
       const otherUser =
@@ -29,26 +28,17 @@ const getListConversation = async (req, res) => {
           : conversation.user1;
 
       return {
-        conversationId: conversation._id,
+        conversationId: conversation._id.toString(),
         user: {
-          id: otherUser._id,
-          name: otherUser.name,
+          id: otherUser._id.toString(),
           email: otherUser.email,
-          avatar: otherUser.avatar
+          avatar: otherUser.avatar || ""
         },
-        lastMessage: conversation.lastMessage
-          ? {
-              sender: {
-                id: conversation.lastMessage.senderId?._id || null,
-                name: conversation.lastMessage.senderId?.name || "Unknown"
-              },
-              content: conversation.lastMessage.content,
-              sentAt: conversation.lastMessage.sentAt
-            }
-          : null,
-        createdAt: conversation.createdAt
+        lastMessage: conversation.lastMessage?.content || "",
+        createdAt: conversation.createdAt.toISOString()
       };
     });
+
     return res.status(200).json({
       status: "OK",
       message: "Lấy danh sách cuộc trò chuyện thành công",
@@ -66,6 +56,7 @@ const getListConversation = async (req, res) => {
 
 
 
+
 const sendMessage = async (req, res) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
@@ -74,14 +65,13 @@ const sendMessage = async (req, res) => {
     }
 
     const decoded = await verifyToken(token);
-    const userId = decoded.id;
+    const senderId = decoded.id;
     const { receiverId, content, type, attachments } = req.body;
 
     if (!receiverId || !content) {
       return res.status(400).json({ status: "ERROR", message: "Thiếu thông tin!" });
     }
 
-    // 3️⃣ Kiểm tra xem đã có conversation chưa
     let conversation = await Conversation.findOne({
       $or: [
         { user1: senderId, user2: receiverId },
@@ -93,8 +83,6 @@ const sendMessage = async (req, res) => {
       conversation = new Conversation({ user1: senderId, user2: receiverId });
       await conversation.save();
     }
-
-    // 4️⃣ Lưu tin nhắn vào database
     const message = new Message({
       conversationId: conversation._id,
       senderId,
@@ -106,18 +94,15 @@ const sendMessage = async (req, res) => {
 
     await message.save();
 
-    // 5️⃣ Cập nhật lastMessage trong conversation
+  
     conversation.lastMessage = {
       messageId: message._id,
       senderId: senderId,
       content: content,
-      sentAt: new Date()
     };
     await conversation.save();
 
-    // 6️⃣ Emit tin nhắn qua Socket.IO
-    req.app.io.to(receiverId).emit("receive_message", message);
-
+    
     return res.status(201).json({
       status: "OK",
       message: "Gửi tin nhắn thành công",

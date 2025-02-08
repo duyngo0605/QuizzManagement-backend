@@ -53,7 +53,7 @@ const getResult = async (req, res) => {
     try {
         const ResultId = req.params.id;
         const token = req.headers.authorization?.split(' ')[1];
-        const { quizName, sortBy, sortOrder } = req.query; // Nhận thêm sortOrder
+        const { quizName, sortBy, sortOrder } = req.query; 
 
         const response = await ResultService.getResult(ResultId, token, quizName, sortBy, sortOrder);
         return res.status(200).json(response);
