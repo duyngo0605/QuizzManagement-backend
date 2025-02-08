@@ -5,23 +5,32 @@ const { verifyToken, checkPermissions } = require('../middleware/authMiddleware'
 const createTeam = async (newTeam) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const createdTeam = await Team.create(newTeam)
+            const createdTeam = await Team.create(newTeam);
             if (createdTeam) {
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
                     data: createdTeam
-                })
+                });
+            }
+        } catch (e) {
+            if (e.code === 11000) {
+                reject({
+                    status: 'ERR',
+                    message: 'Team code already exists, please use a different code.'
+                });
+            } else {
+                reject({
+                    status: 'ERR',
+                    message: e.message
+                });
             }
         }
+    });
+};
 
-        catch (e) {
-            reject(e)
-        }
-    })
-}
 
-const getTeam = (id, token) => {
+const getTeam = (id, token, filter) => {
     return new Promise(async (resolve, reject) => {
         try {
             let idUser = null;
@@ -29,18 +38,44 @@ const getTeam = (id, token) => {
                 const decoded = await verifyToken(token);
                 idUser = decoded.id;
             }
-            if (!id) {
-                let allTeam = await Team.find()
-                    .populate('idHost', '_id email avatar'); 
 
+            if (!id) {
+                const filterCondition = {};
+                console.log("Received Filter:", filter);
+
+                if (filter?.name || filter?.code) {
+                    filterCondition.$or = [];
+                    if (typeof filter.name === "string" && filter.name.trim() !== "") {
+                        filterCondition.$or.push({ name: { $regex: filter.name, $options: 'i' } });
+                    }
+                    if (typeof filter.code === "string" && filter.code.trim() !== "") {
+                        filterCondition.$or.push({ code: { $regex: filter.code, $options: 'i' } });
+                    }
+                
+                    // Nếu $or rỗng, xóa nó để tránh lỗi
+                    if (filterCondition.$or.length === 0) {
+                        delete filterCondition.$or;
+                    }
+                }
+                console.log("Filter Condition:", JSON.stringify(filterCondition, null, 2));
+
+                
+                let sortCondition = {};
+                if (filter?.sortField) {
+                    sortCondition[filter.sortField] = filter.sortOrder === 'desc' ? -1 : 1;
+                }
+
+                let allTeam = await Team.find(filterCondition)
+                    .populate('idHost', '_id email avatar')
+                    .sort(sortCondition); 
                 if (idUser) {
                     allTeam = await Promise.all(allTeam.map(async team => {
                         let teamStatus = 'not-joined';
                         if (team.idHost && team.idHost._id.toString() === idUser) {
                             teamStatus = 'host';
-                        }else if (team.members.some(m => m.member && m.member._id.toString() === idUser)) {
+                        } else if (team.members.some(m => m.member && m.member._id.toString() === idUser)) {
                             teamStatus = 'joined';
-                        }  else {
+                        } else {
                             const pendingRequest = await RequestJoin.findOne({
                                 idTeam: team._id,
                                 idUser: idUser,
@@ -68,36 +103,31 @@ const getTeam = (id, token) => {
                     data: allTeam
                 });
             } else {
-            
                 const team = await Team.findOne({ _id: id })
                     .populate('members.member', '_id email avatar')
                     .populate({
                         path: 'quizzes',
                         populate: {
                             path: 'topicId',
-                            select: '_id name' 
+                            select: '_id name'
                         }
                     })
-                    .populate('idHost', '_id email avatar'); 
-                    
+                    .populate('idHost', '_id email avatar');
+
                 if (!team) {
                     return reject({
                         status: 'ERR',
                         message: 'The Team is not defined'
                     });
                 }
-        
-                
+
                 let teamStatus = 'not-joined';
-                console.log(idUser);
-                console.log(team.idHost);
                 if (idUser) {
-                     if (team.idHost._id.toString() === idUser) {
+                    if (team.idHost._id.toString() === idUser) {
                         teamStatus = 'host';
-                     } else if (team.members.some(m => m.member._id.toString() === idUser)) {
+                    } else if (team.members.some(m => m.member._id.toString() === idUser)) {
                         teamStatus = 'joined';
-                    }
-                     else {
+                    } else {
                         const pendingRequest = await RequestJoin.findOne({
                             idTeam: id,
                             idUser: idUser,
@@ -109,7 +139,8 @@ const getTeam = (id, token) => {
                         }
                     }
                 }
-
+                let teamObject = team.toObject();
+                teamObject.joinStatus = teamStatus;
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
@@ -122,6 +153,7 @@ const getTeam = (id, token) => {
         }
     });
 };
+
 
 
 const updateTeam = async (TeamId, data, token) => {

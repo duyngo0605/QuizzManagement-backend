@@ -59,14 +59,15 @@ const getQuestion = (id, filter) => {
 
                     if (filter) {
                         if (filter.content) {
-                            filterCondition.content = { $regex: filter.content, $options: 'i' }; // Tìm kiếm theo nội dung (không phân biệt hoa thường)
+                            filterCondition.content = { $regex: filter.content, $options: 'i' }; 
                         }
                         if (filter.type) {
-                            filterCondition.type = filter.type; // Tìm kiếm chính xác theo loại câu hỏi
+                            filterCondition.type = filter.type;
                         }
                         if (filter.idCreator) {
-                            filterCondition.idCreator = filter.idCreator; // Tìm kiếm chính xác theo idCreator
+                            filterCondition.idCreator = filter.idCreator; 
                         }
+                        
                     }
                     allQuestion = await Question.find(filterCondition)
                     resolve({
@@ -123,7 +124,19 @@ const updateQuestion = async (id, data, token) => {
             }
             console.log('debug')
             await checkPermissions(token, checkQuestion.idCreator);
+            const quizWithQuestion = await Quiz.findOne({ questions: id });
 
+            if (quizWithQuestion) {
+            
+                const resultExists = await Result.exists({ idQuiz: quizWithQuestion._id });
+
+                if (resultExists) {
+                    return reject({
+                        status: 'ERR',
+                        message: 'Cannot update a question that belongs to a quiz with results.'
+                    });
+                }
+            }
             const updatedQuestion = await Question.findByIdAndUpdate(id, data, {new: true})
             resolve({
                 status: 'OK',

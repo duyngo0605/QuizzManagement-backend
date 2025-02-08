@@ -40,7 +40,7 @@ const createPost = async (newPost, token) => {
 }
 
 
-const getPost = (id, teamId, token) => {
+const getPost = (id, teamId, token,sortBy = 'updatedAt') => {
     return new Promise(async (resolve, reject) => {
         try {
             let query = {};
@@ -57,12 +57,15 @@ const getPost = (id, teamId, token) => {
                     return reject({ status: 'ERR', message: 'Invalid token' });
                 }
             }
+            const sortCriteria = sortBy === 'createdAt' ? { createdAt: -1 } : { updatedAt: -1 };
+
             const posts = await Post.find(query)
                 .populate('quiz')
                 .populate('creator', 'email avatar') 
                 .populate('comments', '_id') 
-                .select('likes') 
-                .lean(); 
+                .select('likes image content createdAt updatedAt') 
+                .lean()
+                .sort(sortCriteria);
 
             const postData = posts.map(post => {
                 let postResult = {

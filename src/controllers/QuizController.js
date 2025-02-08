@@ -74,8 +74,9 @@ const cloneQuiz = async (req, res) => {
 const getQuiz = async (req, res) => {
     try {
         const filter = req.query;
-        const QuizId = req.params.id
-        const response = await QuizService.getQuiz(QuizId, filter)
+        const QuizId = req.params.id;
+        const filterType = filter.filterType;
+        const response = await QuizService.getQuiz(QuizId, filter,filterType)
         return res.status(200).json(response)
     } catch (e) {
         return res.status(500).json({

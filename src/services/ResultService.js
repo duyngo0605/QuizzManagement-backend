@@ -58,24 +58,13 @@ const createResult = async (newResult, token) => {
     });
 };
 
-const getResult = (id, token) => {
+const getResult = (id, token, quizName, sortBy, sortOrder) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!id) {
-                let query = {};
-                
-                if (token) {
-                    const decoded = await verifyToken(token);
-                    query.userId = decoded.id;
-                }
+            let query = {};
 
-                const allResult = await Result.find(query).populate('idQuiz', 'name image _id');
-                resolve({
-                    status: 'OK',
-                    message: 'Success',
-                    data: allResult
-                });
-            } else {
+            
+            if (id) {
                 const result = await Result.findOne({ _id: id });
                 if (!result) {
                     reject({
@@ -89,7 +78,53 @@ const getResult = (id, token) => {
                     message: 'SUCCESS',
                     data: result
                 });
+                return;
             }
+
+           
+            if (token) {
+                const decoded = await verifyToken(token);
+                query.idParticipant = decoded.id;
+            }
+
+
+            if (quizName) {
+                const quiz = await Quiz.findOne({ name: new RegExp(quizName, 'i') });
+                if (!quiz) {
+                    reject({
+                        status: 'ERR',
+                        message: 'Quiz not found'
+                    });
+                    return;
+                }
+                query.idQuiz = quiz._id;
+            }
+
+            
+            const order = sortOrder === 'asc' ? 1 : -1;
+
+            
+            let sortOption = {};
+            if (sortBy === 'leaderboard') {
+                sortOption = {
+                    score: -order,          
+                    completeTime: order,  
+                    attempts: order         
+                };
+            } else if (sortBy === 'date') {
+                sortOption = { createdAt: order }; 
+            }
+
+            
+            const allResult = await Result.find(query)
+                .populate('idQuiz', 'name image _id')
+                .sort(sortOption);
+
+            resolve({
+                status: 'OK',
+                message: 'Success',
+                data: allResult
+            });
         } catch (e) {
             reject({
                 status: 'ERR',
@@ -98,6 +133,8 @@ const getResult = (id, token) => {
         }
     });
 };
+
+
 
 
 const getLeadBoard = (idQuiz, token) => {
