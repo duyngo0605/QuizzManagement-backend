@@ -8,6 +8,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const Conversation = require("./models/Conversation");
 const { saveMessage } = require("./services/MessageService");
+const { log } = require("console");
 dotenv.config();
 
 const app = express();
@@ -77,7 +78,10 @@ io.on("connection", (socket) => {
       console.error(" Error joining conversation:", error);
     }
   });
-
+  socket.on("joinUserRoom", (userId) => {
+    socket.join(userId);
+    
+  });
   
   socket.on("sendMessage", async (message) => {
     const { senderId, content, receiverId } = message;
@@ -101,12 +105,48 @@ io.on("connection", (socket) => {
         await conversation.save();
       }
 
-      // 💾 Lưu tin nhắn
+     
       const savedMessage = await saveMessage(conversation._id, senderId, content, receiverId);
-      console.log("📨 Message saved & emitted:", savedMessage._id);
-
-      // 📡 Phát tin nhắn đến phòng
+    
+      
       io.to(conversation._id.toString()).emit("newMessage", savedMessage);
+
+      const updatedConversation = await Conversation.findById(conversation._id)
+    .populate("user1", "email avatar")
+    .populate("user2", "email avatar")
+    .populate({
+      path: "lastMessage.messageId",
+      select: "content sentAt",
+    })
+    .populate({
+      path: "lastMessage.senderId",
+      select: "_id",
+    });
+    const formatConversation = (conv, userId) => {
+    
+      const otherUser = conv.user1._id.toString() === userId ? conv.user2 : conv.user1;
+    
+      return {
+        conversationId: conv._id.toString(),
+        user: {
+          id: otherUser._id.toString(),
+          email: otherUser.email,
+          avatar: otherUser.avatar || ""
+        },
+        lastMessage: conv.lastMessage
+        ? {
+            content: conv.lastMessage.messageId?.content || "",
+            senderId: conv.lastMessage.senderId?._id || "",
+            sentAt: conv.lastMessage.messageId?.sentAt || "",
+          }
+        : null,
+  
+        createdAt: conv.createdAt.toISOString()
+      };
+    };
+    
+    io.to(senderId).emit("updateConversationList", formatConversation(updatedConversation, senderId));
+    io.to(receiverId).emit("updateConversationList", formatConversation(updatedConversation, receiverId));
     } catch (error) {
       console.error(" Error saving message:", error);
     }
@@ -117,5 +157,4 @@ io.on("connection", (socket) => {
     console.log(" User disconnected:", socket.id);
   });
 });
-
 

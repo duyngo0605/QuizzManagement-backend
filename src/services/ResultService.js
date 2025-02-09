@@ -58,7 +58,7 @@ const createResult = async (newResult, token) => {
     });
 };
 
-const getResult = (id, token, quizName, sortBy, sortOrder) => {
+const getResult = (idParticipant,id, token, quizName, sortBy, sortOrder) => {
     return new Promise(async (resolve, reject) => {
         try {
             let query = {};
@@ -80,9 +80,12 @@ const getResult = (id, token, quizName, sortBy, sortOrder) => {
                 });
                 return;
             }
+            if (idParticipant) {
+                query.idParticipant = idParticipant;
+            }
 
            
-            if (token) {
+            if (token && !idParticipant) {
                 const decoded = await verifyToken(token);
                 query.idParticipant = decoded.id;
             }
@@ -99,11 +102,8 @@ const getResult = (id, token, quizName, sortBy, sortOrder) => {
                 }
                 query.idQuiz = quiz._id;
             }
-
-            
             const order = sortOrder === 'asc' ? 1 : -1;
-
-            
+    
             let sortOption = {};
             if (sortBy === 'leaderboard') {
                 sortOption = {
@@ -116,9 +116,17 @@ const getResult = (id, token, quizName, sortBy, sortOrder) => {
             }
 
             
-            const allResult = await Result.find(query)
+            let queryResult = Result.find(query)
                 .populate('idQuiz', 'name image _id')
                 .sort(sortOption);
+
+            
+            if (idParticipant) {
+                queryResult = queryResult.limit(5);
+            }
+
+        
+            const allResult = await queryResult;
 
             resolve({
                 status: 'OK',

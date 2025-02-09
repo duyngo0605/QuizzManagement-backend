@@ -10,17 +10,30 @@ const createPost = async (newPost, token) => {
             const checkTeam = await Team.findOne({
                 _id: newPost.team
             })
+
+            if (!newPost.content || newPost.content.trim() === '') {
+                return reject({
+                    status: 'ERR',
+                    message: 'Content is required'
+                });
+            }
             if (!checkTeam) {
                 reject({
                     status: 'ERR',
                     message: 'The Team is not defined'
                 })
             }
-            if (checkTeam.members.indexOf(creator) === -1 && checkTeam.idHost != creator) {
-                reject({
+            console.log(creator);
+            
+            const isMember = checkTeam.members.some(m => m.member.toString() === creator);
+
+            const isHost = checkTeam.idHost.toString() === creator;
+
+            if (!isMember && !isHost) {
+                return reject({
                     status: 'ERR',
                     message: 'The User is not a member of the Team'
-                })
+                });
             }
             const createdPost = await Post.create({...newPost, creator})
             if (createdPost)
@@ -63,6 +76,7 @@ const getPost = (id, teamId, token,sortBy = 'updatedAt') => {
                 .populate('quiz')
                 .populate('creator', 'email avatar') 
                 .populate('comments', '_id') 
+                .populate('quiz', '_id image name') 
                 .select('likes image content createdAt updatedAt') 
                 .lean()
                 .sort(sortCriteria);

@@ -56,21 +56,27 @@ const createManyTeams = async (req, res) => {
 const getTeam = async (req, res) => {
     try {
         const token = req.headers.authorization?.split(' ')[1];
-        const TeamId = req.params.id
+        const TeamId = req.params.id;
+
         const filter = {
-            code:req.query.code || null, 
+            code: req.query.code || null, 
             name: req.query.name || null, 
             sortField: req.query.sortField || 'createdAt',
             sortOrder: req.query.sortOrder || 'desc'
         };
-        const response = await TeamService.getTeam(TeamId, token,filter)
-        return res.status(200).json(response)
+
+        const myTeam = req.query.myTeam === 'true'; // Kiểm tra tham số myTeam từ query
+
+        const response = await TeamService.getTeam(TeamId, token, filter, myTeam);
+        
+        return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({
-            message: e
-        })
+            message: e.message || "Something went wrong"
+        });
     }
-}
+};
+
 
 
 const updateTeam =  async (req, res) => {    

@@ -53,9 +53,9 @@ const getResult = async (req, res) => {
     try {
         const ResultId = req.params.id;
         const token = req.headers.authorization?.split(' ')[1];
-        const { quizName, sortBy, sortOrder } = req.query; 
+        const { quizName, sortBy, sortOrder,idParticipant } = req.query; 
 
-        const response = await ResultService.getResult(ResultId, token, quizName, sortBy, sortOrder);
+        const response = await ResultService.getResult(idParticipant,ResultId, token, quizName, sortBy, sortOrder);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(500).json({

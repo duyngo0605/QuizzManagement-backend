@@ -17,9 +17,15 @@ const getListConversation = async (req, res) => {
     })
       .populate("user1", "email avatar")
       .populate("user2", "email avatar")
-      .populate("lastMessage.messageId", "content sentAt")
-      .populate("lastMessage.senderId", "email")
-      .sort({ "lastMessage.sentAt": -1 });
+      .populate({
+        path: "lastMessage.messageId",
+        select: "content sentAt"
+      })
+      .populate({
+        path: "lastMessage.senderId",
+        select: "_id"
+      })
+      .sort({ "lastMessage.messageId.sentAt": -1 });
 
     const formattedConversations = conversations.map((conversation) => {
       const otherUser =
@@ -34,7 +40,13 @@ const getListConversation = async (req, res) => {
           email: otherUser.email,
           avatar: otherUser.avatar || ""
         },
-        lastMessage: conversation.lastMessage?.content || "",
+        lastMessage: conversation.lastMessage
+          ? {
+              content: conversation.lastMessage.messageId?.content || "",
+              senderId: conversation.lastMessage.senderId?._id || "",
+              sentAt: conversation.lastMessage.messageId?.sentAt || "",
+            }
+          : null,
         createdAt: conversation.createdAt.toISOString()
       };
     });
@@ -51,6 +63,7 @@ const getListConversation = async (req, res) => {
     });
   }
 };
+
 
 
 

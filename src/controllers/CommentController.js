@@ -49,7 +49,7 @@ const createManyComments = async (req, res) => {
 
 const getComment = async (req, res) => {
     try {
-        const { idPost, idQuiz } = req.query; 
+        const { idPost, idQuiz, sortType } = req.query; 
 
         if (!idPost && !idQuiz) {
             return res.status(400).json({
@@ -58,7 +58,7 @@ const getComment = async (req, res) => {
             });
         }
 
-        const response = await CommentService.getComment(idPost, idQuiz);
+        const response = await CommentService.getComment(idPost, idQuiz, sortType || 'newest');
         return res.status(200).json(response);
     } catch (e) {
         return res.status(400).json({
@@ -67,6 +67,7 @@ const getComment = async (req, res) => {
         });
     }
 };
+
 
 
 const updateComment =  async (req, res) => {    

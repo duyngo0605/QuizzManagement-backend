@@ -71,7 +71,7 @@ const createComment = async (newComment, token) => {
 
 
 
-const getComment = async (idPost, idQuiz) => {
+const getComment = async (idPost, idQuiz, sortType = 'newest') => {
     return new Promise(async (resolve, reject) => {
         try {
             if (!idPost && !idQuiz) {
@@ -92,10 +92,18 @@ const getComment = async (idPost, idQuiz) => {
                 .populate('user', 'email')
                 .select('-parent');
 
+            // Lấy danh sách replies của từng comment
             for (let comment of comments) {
                 comment._doc.replies = await Comment.find({ parent: comment._id })
                     .populate('user', 'email avatar')
                     .select('-post -quiz -parent');
+            }
+
+            // Sắp xếp theo loại yêu cầu
+            if (sortType === 'newest') {
+                comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            } else if (sortType === 'most_replies') {
+                comments.sort((a, b) => b._doc.replies.length - a._doc.replies.length);
             }
 
             resolve({
@@ -108,6 +116,7 @@ const getComment = async (idPost, idQuiz) => {
         }
     });
 };
+
 
 
 const updateComment = async (CommentId, data) => {

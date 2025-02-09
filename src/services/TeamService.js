@@ -30,7 +30,7 @@ const createTeam = async (newTeam) => {
 };
 
 
-const getTeam = (id, token, filter) => {
+const getTeam = (id, token, filter, myTeam = false) => {
     return new Promise(async (resolve, reject) => {
         try {
             let idUser = null;
@@ -51,15 +51,21 @@ const getTeam = (id, token, filter) => {
                     if (typeof filter.code === "string" && filter.code.trim() !== "") {
                         filterCondition.$or.push({ code: { $regex: filter.code, $options: 'i' } });
                     }
-                
-                    // Nếu $or rỗng, xóa nó để tránh lỗi
                     if (filterCondition.$or.length === 0) {
                         delete filterCondition.$or;
                     }
                 }
-                console.log("Filter Condition:", JSON.stringify(filterCondition, null, 2));
 
                 
+                if (myTeam && idUser) {
+                    filterCondition.$or = [
+                        { idHost: idUser }, 
+                        { "members.member": idUser } 
+                    ];
+                }
+
+                console.log("Filter Condition:", JSON.stringify(filterCondition, null, 2));
+
                 let sortCondition = {};
                 if (filter?.sortField) {
                     sortCondition[filter.sortField] = filter.sortOrder === 'desc' ? -1 : 1;
@@ -67,7 +73,8 @@ const getTeam = (id, token, filter) => {
 
                 let allTeam = await Team.find(filterCondition)
                     .populate('idHost', '_id email avatar')
-                    .sort(sortCondition); 
+                    .sort(sortCondition);
+
                 if (idUser) {
                     allTeam = await Promise.all(allTeam.map(async team => {
                         let teamStatus = 'not-joined';
@@ -139,12 +146,13 @@ const getTeam = (id, token, filter) => {
                         }
                     }
                 }
+
                 let teamObject = team.toObject();
                 teamObject.joinStatus = teamStatus;
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
-                    data: team,
+                    data: teamObject,
                     joinStatus: teamStatus
                 });
             }
