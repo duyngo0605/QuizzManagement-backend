@@ -53,8 +53,9 @@ io.on("connection", (socket) => {
 
 
   socket.on("joinConversation", async ({ senderId, receiverId }) => {
+    log(" Joining conversation:", senderId, receiverId);
     try {
-     
+      log(" Joining conversation:", senderId, receiverId);
       let conversation = await Conversation.findOne({
         $or: [
           { user1: senderId, user2: receiverId },
@@ -80,12 +81,12 @@ io.on("connection", (socket) => {
   });
   socket.on("joinUserRoom", (userId) => {
     socket.join(userId);
-    
+    console.log(` User ${socket.id} joined user room ${userId}`);
   });
   
   socket.on("sendMessage", async (message) => {
     const { senderId, content, receiverId } = message;
-
+    console.log("📩 New message:", message);
     if (!senderId || !content || !receiverId) {
       console.error(" Missing required fields in sendMessage:", message);
       return;

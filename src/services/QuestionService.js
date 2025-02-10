@@ -2,7 +2,7 @@ const Question = require('../models/Question')
 const Quiz = require('../models/Quiz')
 const User = require('../models/User')
 const { checkPermissions } = require('../middleware/authMiddleware');
-
+const Result = require('../models/Result');
 const createQuestion = async (newQuestion, token) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -122,21 +122,30 @@ const updateQuestion = async (id, data, token) => {
                     message: 'The Question is not defined.'
                 })
             }
-            console.log('debug')
-            await checkPermissions(token, checkQuestion.idCreator);
-            const quizWithQuestion = await Quiz.findOne({ questions: id });
-
-            if (quizWithQuestion) {
             
-                const resultExists = await Result.exists({ idQuiz: quizWithQuestion._id });
+            await checkPermissions(token, checkQuestion.idCreator);
+            const quizzesWithQuestion = await Quiz.find({ questions: id });
 
+            // Kiểm tra xem có quiz nào có kết quả hay không
+            const quizzesWithResults = [];
+            for (const quiz of quizzesWithQuestion) {
+                const resultExists = await Result.exists({ idQuiz: quiz._id });
                 if (resultExists) {
-                    return reject({
-                        status: 'ERR',
-                        message: 'Cannot update a question that belongs to a quiz with results.'
-                    });
+                    quizzesWithResults.push(quiz);
                 }
             }
+
+            console.log(quizzesWithResults);
+            
+            if (quizzesWithResults.length > 0) {
+                return reject({
+                    status: 'ERR',
+                    message: 'Cannot update a question that belongs to quizzes with results.',
+                    quizzes: quizzesWithResults.map(q => ({ id: q._id, name: q.name }))
+                });
+            }
+            console.log(id,data);
+            
             const updatedQuestion = await Question.findByIdAndUpdate(id, data, {new: true})
             resolve({
                 status: 'OK',
