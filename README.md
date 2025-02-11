@@ -35,10 +35,11 @@
 
 ### Directory Structure
 ```
-backend/
-├── controllers/  # Handle business logic
+src/
+├── controllers/  # Handle to call services
 ├── models/       # Mongoose schemas
 ├── routes/       # API routes
+├── services/     # Handle business logic
 ├── middleware/   # Authentication and error handling
 ├── utils/        # Utility functions
 ├── server.js     # Entry point
