@@ -25,7 +25,7 @@ const getListConversation = async (req, res) => {
         path: "lastMessage.senderId",
         select: "_id"
       })
-      .sort({ "lastMessage.messageId.sentAt": -1 });
+      .sort({ "lastMessage.messageId.sentAt": -1, createdAt: -1 });
 
     const formattedConversations = conversations.map((conversation) => {
       const otherUser =

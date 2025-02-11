@@ -121,7 +121,7 @@ const sendMessage = async (req, res) => {
 
       await message.save();
       let newContent;
-      if(type='image')
+      if(type=='image')
       {
         newContent='🖼️ Picture'
       }
@@ -133,7 +133,7 @@ const sendMessage = async (req, res) => {
         senderId: senderId,
         content: newContent,
       };
-      console.log(conversation);
+      
       
       await conversation.save();
 
