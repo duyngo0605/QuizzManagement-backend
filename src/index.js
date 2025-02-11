@@ -85,8 +85,8 @@ io.on("connection", (socket) => {
   });
   
   socket.on("sendMessage", async (message) => {
-    const { senderId, content, receiverId } = message;
-    console.log("📩 New message:", message);
+    const { senderId, content, receiverId,type } = message;
+  
     if (!senderId || !content || !receiverId) {
       console.error(" Missing required fields in sendMessage:", message);
       return;
@@ -107,7 +107,7 @@ io.on("connection", (socket) => {
       }
 
      
-      const savedMessage = await saveMessage(conversation._id, senderId, content, receiverId);
+      const savedMessage = await saveMessage(conversation._id, senderId, content, receiverId,type);
     
       
       io.to(conversation._id.toString()).emit("newMessage", savedMessage);
@@ -136,7 +136,9 @@ io.on("connection", (socket) => {
         },
         lastMessage: conv.lastMessage
         ? {
-            content: conv.lastMessage.messageId?.content || "",
+          content: conv.lastMessage.messageId?.content
+          ? type === "image" ? "🖼️ Picture" : conv.lastMessage.messageId.content
+          : "",
             senderId: conv.lastMessage.senderId?._id || "",
             sentAt: conv.lastMessage.messageId?.sentAt || "",
           }

@@ -465,6 +465,67 @@ const getUserStats = () => {
 }
 
 
+const getUsers = (search = "", sort = "name", order = "asc", token) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const decoded = await verifyToken(token);
+            const idUser = decoded.id;
+
+            let query = {};
+            if (search) {
+                query = {
+                    $or: [
+                    
+                        { email: { $regex: search, $options: "i" } }
+                    ]
+                };
+            }
+
+            let sortQuery = {};
+            sortQuery[sort] = order === "asc" ? 1 : -1;
+
+            const users = await User.find(query).select("-password").sort(sortQuery);
+
+            const usersWithFriendshipStatus = await Promise.all(users.map(async (user) => {
+                const friendship = await Friendship.findOne({
+                    $or: [
+                        { requester: idUser, recipient: user._id },
+                        { requester: user._id, recipient: idUser },
+                    ],
+                });
+
+                let friendshipStatus = "none";
+                if (friendship) {
+                    if (friendship.status === "accepted") {
+                        friendshipStatus = "friends";
+                    } else if (friendship.status === "pending" && friendship.requester.toString() === idUser) {
+                        friendshipStatus = "request_sent";
+                    } else if (friendship.status === "pending" && friendship.recipient.toString() === idUser) {
+                        friendshipStatus = "request_received";
+                    } else if (friendship.status === "blocked") {
+                        friendshipStatus = "blocked";
+                    }
+                }
+
+                return {
+                    ...user._doc,
+                    friendshipStatus,
+                };
+            }));
+
+            resolve({
+                status: "OK",
+                message: "SUCCESS",
+                data: usersWithFriendshipStatus,
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
+
+
 module.exports = {
     createUser,
     loginUser,
@@ -473,5 +534,6 @@ module.exports = {
     deleteUser,
     changeProfile,
     getMyProfile,
-    getUserStats
+    getUserStats,
+    getUsers
 }

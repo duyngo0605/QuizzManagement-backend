@@ -89,7 +89,7 @@ const getComment = async (idPost, idQuiz, sortType = 'newest') => {
             }
 
             let comments = await Comment.find({ ...filter, parent: null })
-                .populate('user', 'email')
+                .populate('user', 'email avatar')
                 .select('-parent');
 
             // Lấy danh sách replies của từng comment

@@ -59,6 +59,37 @@ const getUser = async (req, res) => {
     }
 }
 
+
+const getUsers = async (req, res) => {
+    try {
+        const search = req.query.search || "";
+        const sort = req.query.sort || "name";
+        const order = req.query.order || "asc";
+        const token = req.headers.authorization?.split(' ')[1];
+        
+        const response = await UserService.getUsers(search, sort, order, token);
+        const filteredResponse = response.data.map(user => ({
+            _id: user._id,
+            avatar: user.avatar,
+            email: user.email,
+            friendshipStatus: user.friendshipStatus
+        }));
+
+        return res.status(200).json({
+            status: response.status,
+            message: response.message,
+            data: filteredResponse
+        });
+       
+    } catch (e) {
+        return res.status(404).json({
+            message: e.message || "An error occurred"
+        });
+    }
+};
+
+
+
 const getMyProfile = async (req, res) => {
     try {
 
@@ -211,6 +242,9 @@ const getUserStats = async (req, res) => {
     }
 }
 
+
+
+
 module.exports = {
     createUser,
     loginUser,
@@ -222,5 +256,6 @@ module.exports = {
     createManyUsers,
     changeProfile,
     getMyProfile,
-    getUserStats
+    getUserStats,
+    getUsers
 }

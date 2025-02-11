@@ -65,7 +65,7 @@ const getTeam = async (req, res) => {
             sortOrder: req.query.sortOrder || 'desc'
         };
 
-        const myTeam = req.query.myTeam === 'true'; // Kiểm tra tham số myTeam từ query
+        const myTeam = req.query.myTeam === 'true'; 
 
         const response = await TeamService.getTeam(TeamId, token, filter, myTeam);
         

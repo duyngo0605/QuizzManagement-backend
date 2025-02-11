@@ -46,11 +46,11 @@ const createManyPosts = async (req, res) => {
 const getPost = async (req, res) => {
     try {
         const { id } = req.params;
-        const { teamId, sortBy } = req.query; 
+        const { teamId, sortBy,creator } = req.query; 
         const authHeader = req.headers.authorization;
         const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
 
-        const response = await PostService.getPost(id, teamId, token, sortBy); 
+        const response = await PostService.getPost(id, teamId,creator, token, sortBy); 
         return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({

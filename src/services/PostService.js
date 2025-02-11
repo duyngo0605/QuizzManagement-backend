@@ -53,14 +53,16 @@ const createPost = async (newPost, token) => {
 }
 
 
-const getPost = (id, teamId, token,sortBy = 'updatedAt') => {
+const getPost = (id, teamId,creator, token,sortBy = 'updatedAt') => {
     return new Promise(async (resolve, reject) => {
         try {
             let query = {};
             if (id) query._id = id;
             if (teamId) query.team = teamId;
-
+            if (creator) query.creator = creator;
             let userId = null;
+        
+            
             if (token ) {
                 try {
                     const decoded = await verifyToken(token);

@@ -101,7 +101,7 @@ const sendMessage = async (req, res) => {
   }
 };
 
-  const saveMessage = async (conversationId, senderId, content, receiverId) => {
+  const saveMessage = async (conversationId, senderId, content, receiverId,type='text') => {
     try {
       let conversation = await Conversation.findById(conversationId);
 
@@ -116,15 +116,25 @@ const sendMessage = async (req, res) => {
         senderId,
         receiverId,
         content,
+        type
       });
 
       await message.save();
-
+      let newContent;
+      if(type='image')
+      {
+        newContent='🖼️ Picture'
+      }
+      else{
+        newContent=content
+      }
       conversation.lastMessage = {
         messageId: message._id,
         senderId: senderId,
-        content: content,
+        content: newContent,
       };
+      console.log(conversation);
+      
       await conversation.save();
 
       
