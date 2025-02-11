@@ -12,10 +12,7 @@
 - **Bcrypt**: For password hashing.
 
 ### Setup Instructions
-1. Navigate to the `backend` directory:
-   ```bash
-   cd backend
-   ```
+1. Make sure that you installed Node.js
 2. Install dependencies:
    ```bash
    npm install
