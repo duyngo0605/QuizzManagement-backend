@@ -1,5 +1,7 @@
 const Quiz = require('../models/Quiz')
 const User = require('../models/User')
+const Question = require('../models/Question')
+const Topic = require('../models/Topic')
 const { checkPermissions } = require('../middleware/authMiddleware');
 const Result = require('../models/Result');
 
@@ -447,6 +449,7 @@ const getPractice = async (id) => {
 const getQuizStats = ( ) => {
     return new Promise(async (resolve, reject) => {
         try {
+            console.log('debug')
             // Tổng số quiz và question
             const totalQuizzes = await Quiz.countDocuments();
             const totalQuestions = await Question.countDocuments();

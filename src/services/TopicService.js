@@ -229,7 +229,7 @@ const getTopicStats =  (id) => {
             reject(e)
         }
     })
-} 
+}
 
 module.exports = {
     createTopic,
