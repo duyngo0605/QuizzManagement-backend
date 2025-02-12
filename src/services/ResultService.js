@@ -54,7 +54,7 @@ const createResult = async (newResult, token) => {
                 attemptTime: previousAttempts + 1
             });
 
-            
+
             const populatedResult = await Result.findById(createdResult._id)
             .populate('idQuiz', 'name image _id');
             resolve({
@@ -68,7 +68,7 @@ const createResult = async (newResult, token) => {
     });
 };
 
-const getResult = (idParticipant,id, token, quizName, sortBy, sortOrder) => {
+const getResult = (idParticipant,id, token, quizName, sortBy, sortOrder, idQuiz) => {
     return new Promise(async (resolve, reject) => {
         try {
             let query = {};
@@ -111,6 +111,18 @@ const getResult = (idParticipant,id, token, quizName, sortBy, sortOrder) => {
                     return;
                 }
                 query.idQuiz = quiz._id;
+            }
+
+            if (idQuiz) {
+                const quiz = await Quiz.findById(idQuiz);
+                if (!quiz) {
+                    reject({
+                        status: 'ERR',
+                        message: 'Quiz not found'
+                    });
+                    return;
+                }
+                query.idQuiz = idQuiz;
             }
             const order = sortOrder === 'asc' ? 1 : -1;
     
