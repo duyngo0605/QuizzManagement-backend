@@ -14,5 +14,4 @@ router.post('/many', QuizController.createManyQuizzes)
 router.get('/practice/:id', QuizController.getPractice)
 router.post('/clone/:id', QuizController.cloneQuiz)
 
-
 module.exports = router
