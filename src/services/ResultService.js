@@ -41,10 +41,20 @@ const createResult = async (newResult, token) => {
 
             const decoded = await verifyToken(token);
             
-            const createdResult = await Result.create({
-                ...newResult,
+            // Đếm số lượng kết quả trước đó của cùng một idQuiz và idParticipant
+            const previousAttempts = await Result.countDocuments({
+                idQuiz,
                 idParticipant: decoded.id
             });
+
+            // Tạo result mới với attemptTime tăng lên 1 đơn vị
+            const createdResult = await Result.create({
+                ...newResult,
+                idParticipant: decoded.id,
+                attemptTime: previousAttempts + 1
+            });
+
+            
             const populatedResult = await Result.findById(createdResult._id)
             .populate('idQuiz', 'name image _id');
             resolve({
