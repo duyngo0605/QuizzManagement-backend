@@ -9,6 +9,7 @@ const cors = require("cors");
 const Conversation = require("./models/Conversation");
 const { saveMessage } = require("./services/MessageService");
 const { log } = require("console");
+const User = require("./models/User");
 dotenv.config();
 
 const app = express();
@@ -154,6 +155,51 @@ io.on("connection", (socket) => {
       console.error(" Error saving message:", error);
     }
   });
+
+  socket.on("callUser", async ({ from, to, signal }) => {
+    try {
+        const caller = await User.findById(from).select("email avatar"); 
+        if (!caller) {
+            console.error("Caller not found:", from);
+            return;
+        }
+
+        io.to(to).emit("callIncoming", {
+            id: from,
+            email: caller.email,
+            avatar: caller.avatar || "",
+            signal: signal // 🔹 Thêm signal vào dữ liệu gửi đi
+        });
+
+        console.log(`📞 Call initiated from ${from} to ${to}`);
+    } catch (error) {
+        console.error("Error handling callUser:", error);
+    }
+});
+
+  
+  socket.on("answerCall", ({ from, to, signal }) => {
+    io.to(from).emit("callAccepted", { signal });
+    console.log(`✅ Call accepted from ${to} to ${from}`);
+  });
+
+
+  socket.on("iceCandidate", ({ to, candidate }) => {
+    if (!candidate || typeof candidate !== "object") {
+        console.error("🚨 Invalid ICE candidate received:", candidate);
+        return;
+    }
+
+    io.to(to).emit("iceCandidate", {
+        candidate: candidate.candidate, // Đảm bảo đây là string
+        sdpMid: candidate.sdpMid || null, // Xử lý null nếu cần
+        sdpMLineIndex: Number(candidate.sdpMLineIndex) || 0 // Ép kiểu về int an toàn
+    });
+
+    console.log("❄️ ICE Candidate sent to:", to);
+});
+
+
 
  
   socket.on("disconnect", () => {
