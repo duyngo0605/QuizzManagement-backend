@@ -40,7 +40,13 @@ const createResult = async (newResult, token) => {
             }
 
             const decoded = await verifyToken(token);
-            
+
+            const previousAttempts = await Result.countDocuments({
+                idQuiz,
+                idParticipant: decoded.id,
+                attemptTime: previousAttempts + 1
+            });
+
             const createdResult = await Result.create({
                 ...newResult,
                 idParticipant: decoded.id
